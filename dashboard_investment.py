@@ -1,5 +1,5 @@
 """
-uv run streamlit run app.py --server.headless true
+uv run streamlit run dashboard_investment.py --server.headless true
 
 This template is intentionally simple but production-ready:
 - Core calculation in pure Python (easy to unit test)
@@ -16,7 +16,7 @@ import plotly.express as px
 import polars as pl
 import streamlit as st
 
-from utils import ProjectionInputs, project_cashflows, stock_investment_monthly
+from utils import stock_investment_monthly
 
 # ========================
 # Streamlit UI
@@ -98,7 +98,7 @@ def main():
                 df.to_pandas(),
                 x="month",
                 y=columns_to_plot,
-                labels={"value": "Amount ($)", "month": "Month"},
+                labels={"value": "Amount", "month": "Month"},
                 title="Portfolio Projection",
             )
             st.plotly_chart(fig, use_container_width=True)
@@ -109,6 +109,10 @@ def main():
     st.subheader("Yearly Projection")
     df_yearly = df.filter(pl.col("month") % 12 == 0)
     st.dataframe(df_yearly, width=1800)
+
+
+if __name__ == "__main__":
+    main()
 
     # st.set_page_config(
     #     page_title="Investment Calculator", page_icon="📈", layout="wide"
@@ -199,7 +203,3 @@ def main():
     # - Add scenario comparison (e.g., optimistic/base/pessimistic)
     # - Export to CSV/Excel/PDF
     # """)
-
-
-if __name__ == "__main__":
-    main()
