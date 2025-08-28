@@ -69,41 +69,16 @@ def main():
     # --- Plot balance over time ---
     st.subheader("Portfolio Projection")
 
-    # Create columns: plot (wide) and checkboxes (narrow)
-    col1, col2 = st.columns([4, 1])
-
-    # --- Sidebar-like controls on the right ---
-    with col2:
-        st.write("### Toggle Lines")
-        show_balance = st.checkbox("Balance", value=True)
-        show_balance_real = st.checkbox("Balance (Real)", value=True)
-        show_returns = st.checkbox("Returns", value=False)
-        show_returns_real = st.checkbox("Returns (Real)", value=False)
-
-    # --- Determine which columns to plot ---
-    columns_to_plot = []
-    if show_balance:
-        columns_to_plot.append("balance")
-    if show_balance_real:
-        columns_to_plot.append("balance_real")
-    if show_returns:
-        columns_to_plot.append("returns_cum")
-    if show_returns_real:
-        columns_to_plot.append("returns_cum_real")  # make sure you calculate this
-
     # --- Plot in the left column ---
-    with col1:
-        if columns_to_plot:  # only plot if at least one line is selected
-            fig = px.line(
-                df.to_pandas(),
-                x="month",
-                y=columns_to_plot,
-                labels={"value": "Amount", "month": "Month"},
-                title="Portfolio Projection",
-            )
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.info("Select at least one line to display on the plot.")
+
+    fig = px.line(
+        df.to_pandas(),
+        x="month",
+        y=["balance", "returns_cum", "contributions_cum"],
+        labels={"value": "Amount", "month": "Month"},
+        title="Portfolio Projection",
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
     # --- Show table ---
     st.subheader("Yearly Projection")
@@ -113,93 +88,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    # st.set_page_config(
-    #     page_title="Investment Calculator", page_icon="📈", layout="wide"
-    # )
-
-    # st.title("📈 Investment Calculator — Starter Template")
-    # st.caption("Adjust inputs on the left. The chart and KPIs update instantly.")
-
-    # with st.sidebar:
-    #     st.header("Inputs")
-    #     years = st.slider("Years", min_value=1, max_value=50, value=20, step=1)
-    #     monthly = st.slider(
-    #         "Monthly investment", min_value=0, max_value=100000, value=15000, step=1000
-    #     )
-    #     rate = st.slider(
-    #         "Annual return (%)", min_value=-20.0, max_value=30.0, value=7.0, step=0.1
-    #     )
-    #     initial = st.number_input(
-    #         "Initial investment",
-    #         min_value=0.0,
-    #         value=10000.0,
-    #         step=1000.0,
-    #         format="%.2f",
-    #     )
-    #     timing = st.selectbox(
-    #         "Contribution timing",
-    #         options=["end", "begin"],
-    #         index=0,
-    #         help="'end' = pay at end of month; 'begin' = pay at start",
-    #     )
-
-    #     # TODO: Add optional parameters later (e.g., annual contribution increase, fees, inflation)
-
-    # inputs = ProjectionInputs(
-    #     years=years,
-    #     monthly_contribution=float(monthly),
-    #     annual_return_pct=float(rate),
-    #     initial_investment=float(initial),
-    #     contribution_timing=timing,
-    # )
-
-    # df = project_cashflows(inputs)
-
-    # final_balance = float(df["balance"].iloc[-1])
-    # total_contrib = float(df["total_contributions"].iloc[-1])
-    # total_returns = float(df["total_returns"].iloc[-1])
-
-    # kpi1, kpi2, kpi3 = st.columns(3)
-    # kpi1.metric("Final value", f"{final_balance:,.0f}")
-    # kpi2.metric("Total contributed", f"{total_contrib:,.0f}")
-    # kpi3.metric("Total returns", f"{total_returns:,.0f}")
-
-    # # Chart
-    # line = (
-    #     alt.Chart(df)
-    #     .mark_line()
-    #     .encode(
-    #         x=alt.X("month:Q", title="Month"),
-    #         y=alt.Y("balance:Q", title="Portfolio value"),
-    #         tooltip=[
-    #             alt.Tooltip("month", title="Month"),
-    #             alt.Tooltip("balance", title="Balance", format=","),
-    #         ],
-    #     )
-    #     .properties(height=360)
-    # )
-    # st.altair_chart(line, use_container_width=True)
-
-    # with st.expander("Show projection table"):
-    #     st.dataframe(
-    #         df.assign(
-    #             balance=df["balance"].map(lambda x: round(x, 2)),
-    #             total_contributions=df["total_contributions"].map(
-    #                 lambda x: round(x, 2)
-    #             ),
-    #             total_returns=df["total_returns"].map(lambda x: round(x, 2)),
-    #         ),
-    #         use_container_width=True,
-    #         height=360,
-    #     )
-
-    # st.markdown("""
-    # **Next steps (ideas):**
-    # - Add an *annual increase* for monthly contributions (e.g., +3%/yr)
-    # - Model *fees* (fixed and/or % of assets) and *taxes*
-    # - Add *inflation* and show **real** (inflation-adjusted) returns
-    # - Offer yearly/quarterly compounding options
-    # - Add scenario comparison (e.g., optimistic/base/pessimistic)
-    # - Export to CSV/Excel/PDF
-    # """)

@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "ipykernel>=6.30.1",
+    "millify>=0.1.1",
     "plotly>=6.3.0",
     "polars>=1.32.3",
     "streamlit>=1.48.1",

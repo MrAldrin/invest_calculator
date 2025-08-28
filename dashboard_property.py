@@ -3,6 +3,7 @@
 import plotly.express as px
 import polars as pl
 import streamlit as st
+from millify import millify
 
 from utils import house_equity_over_time
 
@@ -34,7 +35,7 @@ def main():
         label="Loan amount",
         min_value=0,
         max_value=20_000_000,
-        value=8_000_000,
+        value=5_000_000,
         step=500_000,
     )
     annual_interest_rate = st.sidebar.slider(
@@ -57,6 +58,11 @@ def main():
     years = st.sidebar.slider(
         label="Projection horizon (years)", min_value=1, max_value=50, value=25
     )
+    rentefradrag = st.sidebar.checkbox(
+        label="Include rentefradrag (22% tax deduction on interest)",
+        value=True,
+        help="The mortgage interest rate is adjusted to account for the tax deduction",
+    )
 
     # --- Calculate projection ---
     df = house_equity_over_time(
@@ -67,47 +73,45 @@ def main():
         loan_term_years,
         years,
         annual_inflation / 100,  # convert % to decimal
+        rentefradrag=rentefradrag,
     )
+
+    # --- Show stats ---
+    if rentefradrag:
+        annual_interest_rate = annual_interest_rate * (1 - 0.22)
+
+    col1, col2, col3, col4, col5 = st.columns(5)
+
+    with col1:
+        st.metric("Effective interest rate", f"{annual_interest_rate:.2f}")
+
+    with col2:
+        st.metric("Equity (end)", millify(df["equity"][-1], precision=1))
+
+    with col3:
+        st.metric("House value (end)", millify(df["house_value"][-1], precision=1))
+
+    with col4:
+        st.metric(
+            "Total interest (end)", millify(df["cumulative_interest"][-1], precision=1)
+        )
+
+    with col5:
+        st.metric(
+            "Remaining loan (end)", millify(df["remaining_balance"][-1], precision=1)
+        )
 
     # --- Plot over time ---
     st.subheader("House & Mortgage Projection")
-    col1, col2 = st.columns([4, 1])
 
-    with col2:
-        st.write("### Toggle Lines")
-        show_house_value = st.checkbox("House value", value=True)
-        show_house_value_real = st.checkbox("House value (Real)", value=True)
-        show_balance = st.checkbox("Remaining loan balance", value=True)
-        show_balance_real = st.checkbox("Remaining loan balance (Real)", value=True)
-        show_equity = st.checkbox("Equity", value=True)
-        show_equity_real = st.checkbox("Equity (Real)", value=True)
-
-    columns_to_plot = []
-    if show_house_value:
-        columns_to_plot.append("house_value")
-    if show_house_value_real:
-        columns_to_plot.append("house_value_real")
-    if show_balance:
-        columns_to_plot.append("remaining_balance")
-    if show_balance_real:
-        columns_to_plot.append("remaining_balance_real")
-    if show_equity:
-        columns_to_plot.append("equity")
-    if show_equity_real:
-        columns_to_plot.append("equity_real")
-
-    with col1:
-        if columns_to_plot:
-            fig = px.line(
-                df.to_pandas(),
-                x="month",
-                y=columns_to_plot,
-                labels={"value": "Amount", "month": "Month"},
-                title="House & Mortgage Projection",
-            )
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.info("Select at least one line to display on the plot.")
+    fig = px.line(
+        df.to_pandas(),
+        x="month",
+        y=["house_value", "remaining_balance", "equity"],
+        labels={"value": "Amount", "month": "Month"},
+        title="House & Mortgage Projection",
+    )
+    st.plotly_chart(fig, use_container_width=True)
 
     # --- Show table ---
     st.subheader("Yearly Projection")
