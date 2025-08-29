@@ -1,26 +1,12 @@
-"""
-uv run streamlit run dashboard_investment.py --server.headless true
+# uv run streamlit run dashboard_investment.py --server.headless true
 
-This template is intentionally simple but production-ready:
-- Core calculation in pure Python (easy to unit test)
-- Monthly compounding and contributions
-- Clean Streamlit UI with sliders for years, monthly investment, and annual return
-- KPIs + interactive chart + optional projection table
-- Clear places marked with TODOs for your future enhancements
-"""
 
-from __future__ import annotations
-
-import altair as alt
 import plotly.express as px
 import polars as pl
 import streamlit as st
+from millify import millify
 
 from utils import stock_investment_monthly
-
-# ========================
-# Streamlit UI
-# ========================
 
 
 def main():
@@ -65,6 +51,21 @@ def main():
         years,
         annual_inflation / 100,  # convert % to decimal
     )
+
+    # --- Show stats ---
+
+    col1, col2, col3 = st.columns(3)
+
+    with col1:
+        st.metric("balance (end)", millify(df["balance"][-1], precision=1))
+
+    with col2:
+        st.metric(
+            "contributions_cum (end)", millify(df["contributions_cum"][-1], precision=1)
+        )
+
+    with col3:
+        st.metric("returns_cum (end)", millify(df["returns_cum"][-1], precision=1))
 
     # --- Plot balance over time ---
     st.subheader("Portfolio Projection")

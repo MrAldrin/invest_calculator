@@ -5,27 +5,27 @@ import polars as pl
 import streamlit as st
 from millify import millify
 
-from utils import house_equity_over_time
+from utils import property_equity_over_time
 
 
 def main():
     st.set_page_config(
-        page_title="House & Mortgage Dashboard",
+        page_title="Property & Mortgage Dashboard",
         layout="wide",
         initial_sidebar_state="expanded",
     )
 
     # --- Sidebar inputs ---
-    st.sidebar.header("House Parameters")
+    st.sidebar.header("Property Parameters")
     initial_price = st.sidebar.slider(
-        label="House price",
+        label="Property price",
         min_value=2_000_000,
         max_value=20_000_000,
         value=8_000_000,
         step=500_000,
     )
     annual_value_change = st.sidebar.slider(
-        label="Annual house value change (%)",
+        label="Annual property value change (%)",
         min_value=-10.0,
         max_value=20.0,
         value=3.0,
@@ -65,7 +65,7 @@ def main():
     )
 
     # --- Calculate projection ---
-    df = house_equity_over_time(
+    df = property_equity_over_time(
         initial_price,
         annual_value_change / 100,  # convert % to decimal
         loan_amount,
@@ -89,7 +89,9 @@ def main():
         st.metric("Equity (end)", millify(df["equity"][-1], precision=1))
 
     with col3:
-        st.metric("House value (end)", millify(df["house_value"][-1], precision=1))
+        st.metric(
+            "property value (end)", millify(df["property_value"][-1], precision=1)
+        )
 
     with col4:
         st.metric(
@@ -102,14 +104,14 @@ def main():
         )
 
     # --- Plot over time ---
-    st.subheader("House & Mortgage Projection")
+    st.subheader("Property & Mortgage Projection")
 
     fig = px.line(
         df.to_pandas(),
         x="month",
-        y=["house_value", "remaining_balance", "equity"],
+        y=["property_value", "remaining_balance", "equity"],
         labels={"value": "Amount", "month": "Month"},
-        title="House & Mortgage Projection",
+        title="Property & Mortgage Projection",
     )
     st.plotly_chart(fig, use_container_width=True)
 
