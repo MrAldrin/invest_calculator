@@ -9,6 +9,7 @@ from millify import millify
 from utils import (
     combined_property_and_stocks,
 )
+from utils_dashboard import scenario_sliders, stats_components
 
 
 def main():
@@ -20,7 +21,7 @@ def main():
 
     st.title("Investment Comparison calculator:")
 
-    # Common Parameters
+    # Common Parameters - sidebar
     st.sidebar.header("Shared Parameters")
     time_horizon_years = st.sidebar.slider(
         label="Projection horizon (years)", min_value=1, max_value=25, value=15
@@ -41,8 +42,8 @@ def main():
     )
     annual_property_appreciation = st.sidebar.slider(
         label="Annual house value change (%)",
-        min_value=-10.0,
-        max_value=10.0,
+        min_value=0.0,
+        max_value=8.0,
         value=5.0,
         step=0.1,
     )
@@ -63,80 +64,26 @@ def main():
         annual_interest_rate = annual_interest_rate * (1 - 0.22)
     st.sidebar.metric("Effective interest rate", f"{annual_interest_rate:.2f}%")
 
+    # --- Scenario Inputs ---
     col1, col2 = st.columns(2)
     with col1:
-        st.subheader("Scenario A:")
-        property_price_1 = st.slider(
-            label="Property price - A",
-            min_value=1_000_000,
-            max_value=20_000_000,
-            value=5_500_000,
-            step=500_000,
-        )
-        loan_amount_1 = st.slider(
-            label="Loan - A",
-            min_value=0,
-            max_value=10_000_000,
-            value=2_500_000,
-            step=500_000,
-        )
-
-        loan_term_years_1 = st.slider(
-            label="Loan remaining years - A", min_value=1, max_value=30, value=25
-        )
-
-        initial_stock_investment_1 = st.slider(
-            label="Initial stock investment - A",
-            min_value=0,
-            max_value=2_000_000,
-            value=0,
-            step=50_000,
-        )
-        monthly_stock_investment_1 = st.slider(
-            label="Monthly stock investment - A",
-            min_value=0,
-            max_value=50_000,
-            value=15_000,
-            step=1_000,
-        )
+        (
+            property_price_1,
+            loan_amount_1,
+            loan_term_years_1,
+            initial_stock_investment_1,
+            monthly_stock_investment_1,
+        ) = scenario_sliders("A")
 
     # Alternative 2
     with col2:
-        st.subheader("Scenario B:")
-        property_price_2 = st.slider(
-            label="Property price - B",
-            min_value=1_000_000,
-            max_value=20_000_000,
-            value=9_500_000,
-            step=500_000,
-        )
-        loan_amount_2 = st.slider(
-            label="Loan - B",
-            min_value=0,
-            max_value=10_000_000,
-            value=6_500_000,
-            step=500_000,
-        )
-
-        loan_term_years_2 = st.slider(
-            label="Loan remaining years - B", min_value=1, max_value=30, value=25
-        )
-
-        initial_stock_investment_2 = st.slider(
-            label="Initial stock investment - B",
-            min_value=0,
-            max_value=2_000_000,
-            value=0,
-            step=50_000,
-        )
-
-        monthly_stock_investment_2 = st.slider(
-            label="Monthly stock investment - B",
-            min_value=0,
-            max_value=50_000,
-            value=0,
-            step=1_000,
-        )
+        (
+            property_price_2,
+            loan_amount_2,
+            loan_term_years_2,
+            initial_stock_investment_2,
+            monthly_stock_investment_2,
+        ) = scenario_sliders("B")
 
     # --- Calculate projections ---
 
@@ -171,24 +118,16 @@ def main():
     )
     # --- Show scenario stats ---
     with col1:
-        st.metric(
-            label="Monthly loan payment - A",
-            value=millify(scenario1_df["loan_payment"][1], precision=3),
-        )
-        st.metric(
-            label="Real loan cost - A",
-            value=millify(scenario1_df["net_cost"][1], precision=3),
-            help="After tax deduction",
+        stats_components(
+            df_scenario=scenario1_df,
+            monthly_stock_investment=monthly_stock_investment_1,
+            scenario="A",
         )
     with col2:
-        st.metric(
-            label="Monthly loan payment - B",
-            value=millify(scenario2_df["loan_payment"][1], precision=3),
-        )
-        st.metric(
-            label="Real loan cost - B",
-            value=millify(scenario2_df["net_cost"][1], precision=3),
-            help="After tax deduction",
+        stats_components(
+            df_scenario=scenario2_df,
+            monthly_stock_investment=monthly_stock_investment_2,
+            scenario="B",
         )
 
     # --- Show comparison stats ---
