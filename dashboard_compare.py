@@ -36,7 +36,7 @@ def main():
     annual_stock_return = st.sidebar.slider(
         label="Annual stock return (%)",
         min_value=0.0,
-        max_value=20.0,
+        max_value=15.0,
         value=10.0,
         step=0.5,
     )
@@ -50,7 +50,7 @@ def main():
     annual_interest_rate = st.sidebar.slider(
         label="Mortgage interest rate (%)",
         min_value=0.0,
-        max_value=15.0,
+        max_value=10.0,
         value=4.0,
         step=0.1,
     )
