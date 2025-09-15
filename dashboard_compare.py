@@ -9,7 +9,7 @@ from millify import millify
 from utils import (
     combined_property_and_stocks,
 )
-from utils_dashboard import scenario_sliders, stats_components
+from utils_dashboard import scenario_end_stats, scenario_sliders, stats_components
 
 
 def main():
@@ -65,7 +65,7 @@ def main():
     st.sidebar.metric("Effective interest rate", f"{annual_interest_rate:.2f}%")
 
     # --- Scenario Inputs ---
-    col1, col2 = st.columns(2)
+    col1, col2 = st.columns(2, border=True)
     with col1:
         (
             property_price_1,
@@ -73,6 +73,7 @@ def main():
             loan_term_years_1,
             initial_stock_investment_1,
             monthly_stock_investment_1,
+            monthly_other_property_costs_1,
         ) = scenario_sliders("A")
 
     # Alternative 2
@@ -83,6 +84,7 @@ def main():
             loan_term_years_2,
             initial_stock_investment_2,
             monthly_stock_investment_2,
+            monthly_other_property_costs_2,
         ) = scenario_sliders("B")
 
     # --- Calculate projections ---
@@ -121,41 +123,21 @@ def main():
         stats_components(
             df_scenario=scenario1_df,
             monthly_stock_investment=monthly_stock_investment_1,
+            monthly_other_property_costs=monthly_other_property_costs_1,
             scenario="A",
+            property_price=property_price_1,
+            loan_amount=loan_amount_1,
+            initial_stock_investment=initial_stock_investment_1,
         )
     with col2:
         stats_components(
             df_scenario=scenario2_df,
             monthly_stock_investment=monthly_stock_investment_2,
+            monthly_other_property_costs=monthly_other_property_costs_2,
             scenario="B",
-        )
-
-    # --- Show comparison stats ---
-    st.subheader("Final Values Comparison")
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric(
-            "Scenario A:",
-            millify(scenario1_df["total_net_worth"][-1], precision=1),
-        )
-        st.caption("Scenario A")
-
-    with col2:
-        st.metric(
-            "Scenario B:", millify(scenario2_df["property_equity"][-1], precision=1)
-        )
-        st.caption("Scenario B:")
-
-    with col3:
-        difference = (
-            scenario1_df["total_net_worth"][-1] - scenario2_df["total_net_worth"][-1]
-        )
-        st.metric(
-            "Difference (Scenario A - B)",
-            millify(difference, precision=1),
-            # delta=millify(difference, precision=1) if difference != 0 else "0",
+            property_price=property_price_2,
+            loan_amount=loan_amount_2,
+            initial_stock_investment=initial_stock_investment_2,
         )
 
     # --- Plot comparison ---
@@ -190,31 +172,23 @@ def main():
             trace.visible = "legendonly"
     st.plotly_chart(fig, use_container_width=True)
 
-    # --- Detailed breakdown for Scenario 1 ---
-    st.subheader("Scenario 1 Breakdown")
+    # --- Show comparison stats ---
+    st.subheader("Final Values Compared")
+    difference = (
+        scenario1_df["total_net_worth"][-1] - scenario2_df["total_net_worth"][-1]
+    )
+    st.metric(
+        "Difference (Scenario A - B)",
+        millify(difference, precision=1),
+        border=True,
+        # delta=millify(difference, precision=1) if difference != 0 else "0",
+    )
 
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        st.metric(
-            "House Equity (end)",
-            millify(scenario1_df["property_equity"][-1], precision=1),
-        )
-
-    with col2:
-        st.metric(
-            "Stock Portfolio (end)",
-            millify(scenario1_df["stock_balance"][-1], precision=1),
-        )
-
-    with col3:
-        st.metric(
-            "Stock Returns (end)",
-            millify(scenario1_df["stock_returns"][-1], precision=1),
-        )
+    scenario_end_stats(df_scenario=scenario1_df, scenario="A")
+    scenario_end_stats(df_scenario=scenario2_df, scenario="B")
 
     # --- Show detailed tables ---
-    st.subheader("Yearly Projections")
+    st.subheader("Raw data tables - yearly display")
 
     numeric_cols = scenario1_df.select(cs.numeric()).columns
 
