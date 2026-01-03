@@ -18,7 +18,6 @@ def _():
 
     from utils import combined_property_and_stocks
     from utils_dashboard import scenario_end_stats, scenario_sliders, stats_components
-
     return combined_property_and_stocks, cs, millify, mo, pl, px
 
 
@@ -33,11 +32,12 @@ def _(mo):
 @app.cell
 def _(mo):
     # Common Parameters
+    _show_value = True
     time_horizon_years = mo.ui.slider(
         start=1,
         stop=25,
         value=15,
-        show_value=True,
+        show_value=_show_value,
         full_width=True,
         label="Projection horizon (years)",
     )
@@ -46,7 +46,7 @@ def _(mo):
         stop=10.0,
         value=2.0,
         step=0.1,
-        show_value=True,
+        show_value=_show_value,
         full_width=True,
         label="Annual inflation (%)",
     )
@@ -55,7 +55,7 @@ def _(mo):
         stop=15.0,
         value=10.0,
         step=0.5,
-        show_value=True,
+        show_value=_show_value,
         full_width=True,
         label="Annual stock return (%)",
     )
@@ -64,7 +64,7 @@ def _(mo):
         stop=8.0,
         value=5.0,
         step=0.1,
-        show_value=True,
+        show_value=_show_value,
         full_width=True,
         label="Annual house value change (%)",
     )
@@ -73,7 +73,7 @@ def _(mo):
         stop=10.0,
         value=4.0,
         step=0.1,
-        show_value=True,
+        show_value=_show_value,
         full_width=True,
         label="Mortgage interest rate (%)",
     )
@@ -118,10 +118,7 @@ def _(
             annual_property_appreciation,
             annual_interest_rate,
             mo.hstack(
-                [
-                    rentefradrag,
-                    mo.md(f"**Effective interest rate:** {effective_rate:.2f}%"),
-                ]
+                [rentefradrag, mo.md(f"**Effective interest rate:** {effective_rate:.2f}%")]
             ),
         ]
     )
@@ -228,9 +225,7 @@ def _(pl, px, scenario1_df, scenario2_df):
 @app.cell
 def _(millify, mo, scenario1_df, scenario2_df):
     # Show comparison stats
-    difference = (
-        scenario1_df["total_net_worth"][-1] - scenario2_df["total_net_worth"][-1]
-    )
+    difference = scenario1_df["total_net_worth"][-1] - scenario2_df["total_net_worth"][-1]
     mo.md(f"""
     ## Final Values Compared
 
@@ -251,13 +246,16 @@ def _(cs, mo, pl, scenario1_df, scenario2_df):
     scenario2_yearly = scenario2_df.filter(
         (pl.col("month") % 12 == 0) | (pl.col("month") == 1)
     )
-
     mo.vstack(
         [
             mo.md("**Scenario A:**"),
-            mo.ui.table(scenario1_yearly),
+            mo.ui.table(
+                scenario1_yearly, format_mapping={col: "{:_.0f}" for col in numeric_cols}
+            ),
             mo.md("**Scenario B:**"),
-            mo.ui.table(scenario2_yearly),
+            mo.ui.table(
+                scenario2_yearly, format_mapping={col: "{:_.0f}" for col in numeric_cols}
+            ),
         ]
     )
     return
@@ -276,6 +274,59 @@ def _(mo):
     mo.md("""
     ## Scenario A
     """)
+    return
+
+
+@app.cell
+def _(mo):
+    def create_scenario_sliders(suffix: str):
+        return mo.ui.dictionary({
+            "property_price": mo.ui.slider(
+                start=1_000_000, stop=10_000_000, value=3_000_000, step=100_000,
+                show_value=False, full_width=True, label=f"Property price {suffix}"
+            ),
+            "loan_amount": mo.ui.slider(
+                start=0, stop=8_000_000, value=2_000_000, step=100_000,
+                full_width=True, label=f"Loan amount {suffix}"
+            ),
+            "loan_term": mo.ui.slider(
+                start=1, stop=30, value=25,
+                full_width=True, label=f"Loan term (years) {suffix}"
+            ),
+            "initial_stock": mo.ui.slider(
+                start=0, stop=2_000_000, value=500_000, step=50_000,
+                full_width=True, label=f"Initial stock investment {suffix}"
+            ),
+            "monthly_stock": mo.ui.slider(
+                start=0, stop=50_000, value=5_000, step=1_000,
+                full_width=True, label=f"Monthly stock investment {suffix}"
+            )
+        })
+
+    def render_scenario(scenario_dict):
+        return mo.vstack([
+            mo.hstack([
+                slider, 
+                mo.md(f"**{slider.value:_}**").style({"text-align": "right"})
+            ], widths=[3, 1])
+            for slider in scenario_dict.values()
+        ])
+
+    return create_scenario_sliders, render_scenario
+
+
+@app.cell
+def _(create_scenario_sliders):
+    # Initialize the two scenarios
+    scenario_a = create_scenario_sliders("A")
+    scenario_b = create_scenario_sliders("B")
+
+    return (scenario_a,)
+
+
+@app.cell
+def _(render_scenario, scenario_a):
+    render_scenario(scenario_a)
     return
 
 
