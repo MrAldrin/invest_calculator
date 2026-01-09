@@ -170,7 +170,7 @@ def main():
     for trace in fig.data:
         if trace.name in ("scenario_A", "scenario_B"):
             trace.visible = "legendonly"
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig)
 
     # --- Show comparison stats ---
     st.subheader("Final Values Compared")

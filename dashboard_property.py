@@ -113,7 +113,7 @@ def main():
         labels={"value": "Amount", "month": "Month"},
         title="Property & Mortgage Projection",
     )
-    st.plotly_chart(fig, use_container_width=True)
+    st.plotly_chart(fig)
 
     # --- Show table ---
     st.subheader("Yearly Projection")
