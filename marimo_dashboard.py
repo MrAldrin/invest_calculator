@@ -9,13 +9,12 @@ app = marimo.App(
 
 with app.setup:
     import marimo as mo
-    import plotly.express as px
     import polars as pl
+    import plotly.express as px
     import polars.selectors as cs
     from millify import millify
 
     from utils import combined_property_and_stocks
-    from utils_dashboard import scenario_end_stats, scenario_sliders
 
 
 @app.cell
@@ -148,18 +147,34 @@ def _():
 
 
 @app.cell
-def _(scenario1_df, scenario2_df):
-    # Show comparison stats
-    difference = scenario1_df["total_net_worth"][-1] - scenario2_df["total_net_worth"][-1]
-    mo.md(f"""
-    ## Final Values Compared
-
-    **Difference (Scenario A - B):** {millify(difference, precision=1)}
+def _():
+    mo.md(r"""
+    ## UI - components
     """)
     return
 
 
-@app.cell(column=1)
+@app.function
+def scenario_end_stats(df_scenario):
+    # Compute the values (similar to your Streamlit code)
+    total_net_worth = millify(df_scenario["total_net_worth"][-1], precision=2)
+    stock_equity = millify(df_scenario["stock_equity"][-1], precision=2)
+    house_equity = millify(df_scenario["property_equity"][-1], precision=2)
+    property_value = millify(df_scenario["property_value"][-1], precision=2)
+
+    # Build “metric cards” with markdown
+    cards = [
+        mo.md(f"**Total net worth**  \n{total_net_worth}"),
+        mo.md(f"**Stock equity**  \n{stock_equity}"),
+        mo.md(f"**House equity**  \n{house_equity}"),
+        mo.md(f"**Property value**  \n{property_value}"),
+    ]
+
+    # Horizontal row, centered-like layout
+    return mo.hstack(cards)
+
+
+@app.cell
 def _():
     def stats_components(
         df_scenario: pl.DataFrame,
@@ -240,9 +255,15 @@ def _():
     return (stats_components_wrapper,)
 
 
-@app.cell
-def _(scenario1_df, scenario_a, stats_components_wrapper):
-    stats_components_wrapper(df_scenario=scenario1_df, scenario_object=scenario_a)
+@app.cell(column=1)
+def _(scenario1_df, scenario2_df):
+    # Show comparison stats
+    difference = scenario1_df["total_net_worth"][-1] - scenario2_df["total_net_worth"][-1]
+    mo.md(f"""
+    ## Final Values Compared
+
+    **Difference (Scenario A - B):** {millify(difference, precision=1)}
+    """)
     return
 
 
@@ -398,6 +419,12 @@ def _(scenario1_df, scenario_a, stats_components_wrapper):
     return
 
 
+@app.cell
+def _(scenario1_df):
+    mo.vstack([mo.md("## Alternative A:"), scenario_end_stats(df_scenario=scenario1_df)])
+    return
+
+
 @app.cell(column=5)
 def _():
     mo.md("""
@@ -415,6 +442,12 @@ def _(render_scenario, scenario_b):
 @app.cell
 def _(scenario2_df, scenario_b, stats_components_wrapper):
     stats_components_wrapper(df_scenario=scenario2_df, scenario_object=scenario_b)
+    return
+
+
+@app.cell
+def _(scenario2_df):
+    mo.vstack([mo.md("## Alternative B:"), scenario_end_stats(df_scenario=scenario2_df)])
     return
 
 
@@ -457,8 +490,6 @@ def _(scenario1_df, scenario2_df):
 
 @app.cell
 def _(scenario1_df, scenario2_df):
-    mo.md("## Detailed Data (Yearly)")
-
     numeric_cols = scenario1_df.select(cs.numeric()).columns
 
     scenario1_yearly = scenario1_df.filter(
@@ -469,15 +500,20 @@ def _(scenario1_df, scenario2_df):
     )
     mo.vstack(
         [
+            mo.md("## Detailed Data (Yearly)"),
             mo.md("**Scenario A:**"),
             mo.ui.table(
                 scenario1_yearly,
                 format_mapping={col: "{:_.0f}" for col in numeric_cols},
+                show_column_summaries=False,
+                show_data_types=False,
             ),
             mo.md("**Scenario B:**"),
             mo.ui.table(
                 scenario2_yearly,
                 format_mapping={col: "{:_.0f}" for col in numeric_cols},
+                show_column_summaries=False,
+                show_data_types=False,
             ),
         ]
     )
