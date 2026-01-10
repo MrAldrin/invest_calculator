@@ -255,26 +255,6 @@ def _():
     return (stats_components_wrapper,)
 
 
-@app.cell(column=1)
-def _(scenario1_df, scenario2_df):
-    # Show comparison stats
-    difference = scenario1_df["total_net_worth"][-1] - scenario2_df["total_net_worth"][-1]
-    mo.md(f"""
-    ## Final Values Compared
-
-    **Difference (Scenario A - B):** {millify(difference, precision=1)}
-    """)
-    return
-
-
-@app.cell(column=2)
-def _():
-    mo.md("""
-    # Investment Comparison Calculator
-    """)
-    return
-
-
 @app.cell
 def _():
     def create_scenario_sliders(suffix: str):
@@ -355,7 +335,7 @@ def _():
     return create_scenario_sliders, render_scenario
 
 
-@app.cell
+@app.cell(column=1)
 def _(create_scenario_sliders):
     # Initialize the two scenarios
     scenario_a = create_scenario_sliders("A")
@@ -363,7 +343,27 @@ def _(create_scenario_sliders):
     return scenario_a, scenario_b
 
 
-@app.cell(column=3)
+@app.cell
+def _():
+    mo.md("""
+    # Investment Comparison Calculator
+    """)
+    return
+
+
+@app.cell
+def _(scenario1_df, scenario2_df):
+    # Show comparison stats
+    difference = scenario1_df["total_net_worth"][-1] - scenario2_df["total_net_worth"][-1]
+    mo.md(f"""
+    ## Final Values Compared
+
+    **Difference (Scenario A - B):** {millify(difference, precision=1)}
+    """)
+    return
+
+
+@app.cell(column=2)
 def _():
     mo.md(r"""
     # Shared values
@@ -399,7 +399,7 @@ def _(
     return
 
 
-@app.cell(column=4)
+@app.cell(column=3)
 def _():
     mo.md("""
     ## Scenario A
@@ -425,7 +425,7 @@ def _(scenario1_df):
     return
 
 
-@app.cell(column=5)
+@app.cell(column=4)
 def _():
     mo.md("""
     ## Scenario B
@@ -451,7 +451,7 @@ def _(scenario2_df):
     return
 
 
-@app.cell(column=6)
+@app.cell(column=5)
 def _(scenario1_df, scenario2_df):
     # Prepare plot data
     plot_df = pl.DataFrame(
