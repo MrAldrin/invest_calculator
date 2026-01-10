@@ -4,13 +4,16 @@ import polars as pl
 def apply_inflation(
     df: pl.DataFrame, annual_inflation: float, columns: list[str]
 ) -> pl.DataFrame:
+    if annual_inflation == 0.0:
+        return df
+
     monthly_inflation = (1 + annual_inflation) ** (1 / 12) - 1
+    # Assumes df has a "month" column starting at 0. This speeds up computation.
+    inflation_factor = (1 + monthly_inflation) ** pl.col("month")
     df = df.with_columns(
-        [
-            (pl.col(col) / ((1 + monthly_inflation) ** pl.arange(0, pl.len())))
-            for col in columns
-        ]
+        [(pl.col(col) / inflation_factor).alias(col) for col in columns]
     )
+
     return df
 
 
@@ -24,7 +27,7 @@ def stock_investment_monthly(
 ) -> pl.DataFrame:
     n_months = years * 12
     monthly_return = (1 + annual_return) ** (1 / 12) - 1
-    # .3784 # tax on returns
+
     balance = [initial_investment]
     contributions_cum = [initial_investment]
     returns_cum = [0.0]
