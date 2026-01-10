@@ -28,45 +28,42 @@ def stock_investment_monthly(
     n_months = years * 12
     monthly_return = (1 + annual_return) ** (1 / 12) - 1
 
-    balance = [initial_investment]
-    contributions_cum = [initial_investment]
-    returns_cum = [0.0]
-
-    for m in range(1, n_months + 1):
-        # previous balance grows
-        interest = balance[-1] * monthly_return
-        new_balance = balance[-1] + interest
-        # add monthly contribution
-        new_balance += monthly_contribution
-
-        # update cumulative trackers
-        balance.append(new_balance)
-        contributions_cum.append(contributions_cum[-1] + monthly_contribution)
-        returns_cum.append(returns_cum[-1] + interest)
-
+    # Create base dataframe with months
     df = pl.DataFrame(
         {
-            "month": [int(m) for m in range(n_months + 1)],
-            "year": [int(m // 12) for m in range(n_months + 1)],
-            "balance": balance,
-            "contributions_cum": contributions_cum,
-            "returns_cum": returns_cum,
-        },
-        schema={
-            "month": pl.Int64,
-            "year": pl.Int64,
-            "balance": pl.Float64,
-            "contributions_cum": pl.Float64,
-            "returns_cum": pl.Float64,
-        },
+            "month": pl.arange(0, n_months + 1, eager=True),
+        }
     )
-    df = df.with_columns(
-        [
-            (pl.col("returns_cum") * (1 - tax_rate)).alias("returns_after_tax"),
-            (
-                pl.col("contributions_cum") + pl.col("returns_cum") * (1 - tax_rate)
-            ).alias("stock_equity"),
-        ]
+
+    df = (
+        df.with_columns(
+            [
+                (pl.col("month") // 12).alias("year"),
+                # Balance calculation using compound interest formula
+                (
+                    initial_investment * ((1 + monthly_return) ** pl.col("month"))
+                    + monthly_contribution
+                    * (((1 + monthly_return) ** pl.col("month") - 1) / monthly_return)
+                ).alias("balance"),
+                # Contributions: simple linear growth
+                (initial_investment + monthly_contribution * pl.col("month")).alias(
+                    "contributions_cum"
+                ),
+            ]
+        )
+        .with_columns(
+            [
+                (pl.col("balance") - pl.col("contributions_cum")).alias("returns_cum"),
+            ]
+        )
+        .with_columns(
+            [
+                (pl.col("returns_cum") * (1 - tax_rate)).alias("returns_after_tax"),
+                (
+                    pl.col("contributions_cum") + pl.col("returns_cum") * (1 - tax_rate)
+                ).alias("stock_equity"),
+            ]
+        )
     )
     df = apply_inflation(
         df,
