@@ -1,4 +1,19 @@
 import polars as pl
+import time
+import functools
+
+
+def timer(func):
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.perf_counter()
+        try:
+            return func(*args, **kwargs)
+        finally:
+            elapsed = time.perf_counter() - start
+            print(f"{func.__name__} took {elapsed:.6f}s")
+
+    return wrapper
 
 
 def apply_inflation(
@@ -17,6 +32,7 @@ def apply_inflation(
     return df
 
 
+@timer
 def stock_investment_monthly(
     initial_investment: float,
     monthly_contribution: float,
@@ -79,6 +95,7 @@ def stock_investment_monthly(
     return df
 
 
+@timer
 def property_value_monthly(
     initial_price: float,
     annual_value_change: float,
@@ -111,6 +128,7 @@ def property_value_monthly(
     return df
 
 
+@timer
 def mortgage_monthly(
     loan_amount: float,
     annual_interest_rate: float,
@@ -192,6 +210,7 @@ def mortgage_monthly(
     return df
 
 
+@timer
 def property_equity_over_time(
     initial_price: float,
     annual_value_change: float,
@@ -237,6 +256,7 @@ def property_equity_over_time(
     return df
 
 
+@timer
 def combined_property_and_stocks(
     property_price: float,
     annual_property_appreciation: float,
