@@ -32,8 +32,8 @@ def _():
 
 
 @app.cell
-def _(COLORS):
-    def create_scenario_sliders(color_index=0):
+def _(COLORS, set_scenarios):
+    def create_scenario_sliders(values, color_index):
         _show_value = True
         _full_width = True
         color = COLORS[color_index % len(COLORS)]
@@ -42,7 +42,7 @@ def _(COLORS):
                 "initial_stock_investment": mo.ui.slider(
                     start=0,
                     stop=2_000_000,
-                    value=500_000,
+                    value=values["initial_stock_investment"],
                     step=50_000,
                     debounce=True,
                     show_value=_show_value,
@@ -52,7 +52,7 @@ def _(COLORS):
                 "monthly_stock_investment": mo.ui.slider(
                     start=0,
                     stop=50_000,
-                    value=5_000,
+                    value=values["monthly_stock_investment"],
                     step=1_000,
                     debounce=True,
                     show_value=_show_value,
@@ -62,7 +62,7 @@ def _(COLORS):
                 "annual_stock_return": mo.ui.slider(
                     start=0.0,
                     stop=15.0,
-                    value=10.0,
+                    value=values["annual_stock_return"],
                     step=0.5,
                     debounce=True,
                     show_value=_show_value,
@@ -72,7 +72,7 @@ def _(COLORS):
                 "annual_inflation": mo.ui.slider(
                     start=0.0,
                     stop=10.0,
-                    value=2.0,
+                    value=values["annual_inflation"],
                     step=0.1,
                     debounce=True,
                     show_value=_show_value,
@@ -82,13 +82,19 @@ def _(COLORS):
                 "time_horizon_years": mo.ui.slider(
                     start=1,
                     stop=25,
-                    value=15,
+                    value=values["time_horizon_years"],
                     debounce=True,
                     show_value=_show_value,
                     full_width=_full_width,
                     label="Projection horizon (years)",
                 ),
-            }
+            },
+            # Write changes back to state
+            on_change=lambda new_vals: set_scenarios(
+                lambda scenarios: [
+                    (new_vals if i == color_index else s) for i, s in enumerate(scenarios)
+                ]
+            ),
         )
         return slider_dict
     return (create_scenario_sliders,)
@@ -108,13 +114,14 @@ def _(COLORS):
             ]
         )
         # return rendered_sliders
-        return mo.vstack([rendered_sliders]).style(
+        colored_sliders = mo.vstack([rendered_sliders]).style(
             {
                 "border-left": f"4px solid {color}",
                 "padding-left": "10px",
                 "margin": "10px 0",
             }
         )
+        return colored_sliders
     return (render_scenario_sliders,)
 
 
@@ -194,31 +201,54 @@ def _(plot):
 
 @app.cell(column=1)
 def _():
-    # how many lines (each line = one slider here, but you can use more)
-    get_alts, set_alts = mo.state([0])
-    return get_alts, set_alts
+    get_scenarios, set_scenarios = mo.state(
+        [
+            {
+                "initial_stock_investment": 500_000,
+                "monthly_stock_investment": 5_000,
+                "annual_stock_return": 10.0,
+                "annual_inflation": 2.0,
+                "time_horizon_years": 15,
+            }
+        ]
+    )
+    return get_scenarios, set_scenarios
 
 
 @app.cell
-def _(set_alts):
-    # Buttons to add/remove a line
+def _(set_scenarios):
     add_button = mo.ui.button(
         label="Add alternative",
-        on_change=lambda _: set_alts(lambda lines: lines + [0]),
+        on_change=lambda _: set_scenarios(
+            lambda scenarios: scenarios
+            + [
+                scenarios[-1].copy()
+                if scenarios
+                else {
+                    "initial_stock_investment": 500_000,
+                    "monthly_stock_investment": 5_000,
+                    "annual_stock_return": 10.0,
+                    "annual_inflation": 2.0,
+                    "time_horizon_years": 15,
+                }
+            ]
+        ),
     )
 
     remove_button = mo.ui.button(
         label="Remove alternative",
-        on_change=lambda _: set_alts(lambda lines: lines[:-1] if lines else lines),
+        on_change=lambda _: set_scenarios(
+            lambda scenarios: scenarios[:-1] if scenarios else scenarios
+        ),
     )
     return add_button, remove_button
 
 
 @app.cell
-def _(create_scenario_sliders, get_alts, set_alts):
+def _(create_scenario_sliders, get_scenarios):
+    scenarios = get_scenarios()
     alternatives = mo.ui.array(
-        [create_scenario_sliders(color_index=i) for i, _ in enumerate(get_alts())],
-        on_change=lambda values: set_alts(values),
+        [create_scenario_sliders(s, i) for i, s in enumerate(scenarios)]
     )
     return (alternatives,)
 
