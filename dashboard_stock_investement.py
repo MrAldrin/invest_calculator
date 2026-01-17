@@ -19,16 +19,19 @@ with app.setup:
 @app.cell
 def _():
     COLORS = [
-        "#2ecc71",  # green
         "#3498db",  # blue
         "#e74c3c",  # red
-        "#f39c12",  # orange
         "#9b59b6",  # purple
+        "#f39c12",  # orange
+        "#2ecc71",  # green
         "#1abc9c",  # turquoise
         "#e67e22",  # dark orange
         "#95a5a6",  # gray
     ]
-    return (COLORS,)
+
+    SHOW_VALUE = True
+    FULL_WIDTH = True
+    return COLORS, FULL_WIDTH, SHOW_VALUE
 
 
 @app.cell
@@ -79,15 +82,15 @@ def _(COLORS, set_scenarios):
                     full_width=_full_width,
                     label="Annual inflation (%)",
                 ),
-                "time_horizon_years": mo.ui.slider(
-                    start=1,
-                    stop=25,
-                    value=values["time_horizon_years"],
-                    debounce=True,
-                    show_value=_show_value,
-                    full_width=_full_width,
-                    label="Projection horizon (years)",
-                ),
+                # "time_horizon_years": mo.ui.slider(
+                #     start=1,
+                #     stop=25,
+                #     value=values["time_horizon_years"],
+                #     debounce=True,
+                #     show_value=_show_value,
+                #     full_width=_full_width,
+                #     label="Projection horizon (years)",
+                # ),
             },
             # Write changes back to state
             on_change=lambda new_vals: set_scenarios(
@@ -110,7 +113,7 @@ def _(COLORS):
                 scenario_dict["monthly_stock_investment"],
                 scenario_dict["annual_stock_return"],
                 scenario_dict["annual_inflation"],
-                scenario_dict["time_horizon_years"],
+                # scenario_dict["time_horizon_years"],
             ]
         )
         # return rendered_sliders
@@ -126,22 +129,22 @@ def _(COLORS):
 
 
 @app.function
-def wrapper_stock_investment_monthly(sliders):
+def wrapper_stock_investment_monthly(sliders, time_slider):
     df = stock_investment_monthly(
         initial_investment=sliders["initial_stock_investment"].value,
         monthly_contribution=sliders["monthly_stock_investment"].value,
         annual_return=sliders["annual_stock_return"].value / 100,
-        years=sliders["time_horizon_years"].value,
+        years=time_slider.value,
         annual_inflation=sliders["annual_inflation"].value / 100,
     )
     return df
 
 
 @app.cell
-def _(alternatives):
+def _(alternatives, time_slider):
     df_alternatives = []
     for i, alt in enumerate(alternatives):
-        df = wrapper_stock_investment_monthly(alt)
+        df = wrapper_stock_investment_monthly(alt, time_slider)
         df = df.with_columns(pl.lit(f"Alternative {i + 1}").alias("scenario"))
         df_alternatives.append(df)
     return (df_alternatives,)
@@ -208,7 +211,7 @@ def _():
                 "monthly_stock_investment": 5_000,
                 "annual_stock_return": 10.0,
                 "annual_inflation": 2.0,
-                "time_horizon_years": 15,
+                # "time_horizon_years": 15,
             }
         ]
     )
@@ -262,6 +265,21 @@ def _(add_button, alternatives, remove_button, render_scenario_sliders):
         ]
     )
     return
+
+
+@app.cell
+def _(FULL_WIDTH, SHOW_VALUE):
+    time_slider = mo.ui.slider(
+        start=1,
+        stop=25,
+        value=20,
+        debounce=True,
+        show_value=SHOW_VALUE,
+        full_width=FULL_WIDTH,
+        label="Projection horizon (years)",
+    )
+    time_slider
+    return (time_slider,)
 
 
 if __name__ == "__main__":
