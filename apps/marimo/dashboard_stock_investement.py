@@ -101,7 +101,6 @@ def _(COLORS, set_scenarios):
             ),
         )
         return slider_dict
-
     return (create_scenario_sliders,)
 
 
@@ -127,7 +126,6 @@ def _(COLORS):
             }
         )
         return colored_sliders
-
     return (render_scenario_sliders,)
 
 
@@ -196,7 +194,6 @@ def _(COLORS, df_alternatives):
             yaxis_title="Amount",
         )
         return fig_alternatives
-
     return (plot,)
 
 
