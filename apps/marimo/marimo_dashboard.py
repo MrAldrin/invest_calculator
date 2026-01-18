@@ -14,7 +14,7 @@ with app.setup:
     import polars.selectors as cs
     from millify import millify
 
-    from utils import combined_property_and_stocks
+    from src.utils import combined_property_and_stocks
 
 
 @app.cell
@@ -200,10 +200,14 @@ def _():
 
         # Marimo Stat objects (equivalent to st.metric)
         # Using fnd/millify logic inside the value
-        m0 = mo.stat(label=f"Initial equity", value=millify(initial_equity, precision=2))
+        m0 = mo.stat(
+            label=f"Initial equity", value=millify(initial_equity, precision=2)
+        )
 
         # Column 1 components
-        m1 = mo.stat(label="Monthly loan payment", value=millify(loan_payment, precision=1))
+        m1 = mo.stat(
+            label="Monthly loan payment", value=millify(loan_payment, precision=1)
+        )
         m2 = mo.stat(
             label="Monthly payment",
             value=millify(total_payment, precision=1),
@@ -231,15 +235,14 @@ def _():
                         mo.vstack([mo.md("### Monthly costs"), m1, m2]).style(
                             {"padding": "0.rem"}
                         ),
-                        mo.vstack([mo.md("### Costs after tax deduction"), m3, m4]).style(
-                            {"padding": "0rem"}
-                        ),
+                        mo.vstack(
+                            [mo.md("### Costs after tax deduction"), m3, m4]
+                        ).style({"padding": "0rem"}),
                     ],
                     justify="start",
                 ),
             ]
         )
-
 
     def stats_components_wrapper(df_scenario: pl.DataFrame, scenario_object):
         return stats_components(
@@ -252,6 +255,7 @@ def _():
             loan_amount=scenario_object["loan_amount"].value,
             initial_stock_investment=scenario_object["initial_stock"].value,
         )
+
     return (stats_components_wrapper,)
 
 
@@ -311,7 +315,6 @@ def _():
             }
         )
 
-
     def render_scenario(scenario_dict):
         return mo.vstack(
             [
@@ -332,6 +335,7 @@ def _():
                 for slider in scenario_dict.values()
             ]
         )
+
     return create_scenario_sliders, render_scenario
 
 
@@ -354,7 +358,9 @@ def _():
 @app.cell
 def _(scenario1_df, scenario2_df):
     # Show comparison stats
-    difference = scenario1_df["total_net_worth"][-1] - scenario2_df["total_net_worth"][-1]
+    difference = (
+        scenario1_df["total_net_worth"][-1] - scenario2_df["total_net_worth"][-1]
+    )
     mo.md(f"""
     ## Final Values Compared
 
@@ -421,7 +427,9 @@ def _(scenario1_df, scenario_a, stats_components_wrapper):
 
 @app.cell
 def _(scenario1_df):
-    mo.vstack([mo.md("## Alternative A:"), scenario_end_stats(df_scenario=scenario1_df)])
+    mo.vstack(
+        [mo.md("## Alternative A:"), scenario_end_stats(df_scenario=scenario1_df)]
+    )
     return
 
 
@@ -447,7 +455,9 @@ def _(scenario2_df, scenario_b, stats_components_wrapper):
 
 @app.cell
 def _(scenario2_df):
-    mo.vstack([mo.md("## Alternative B:"), scenario_end_stats(df_scenario=scenario2_df)])
+    mo.vstack(
+        [mo.md("## Alternative B:"), scenario_end_stats(df_scenario=scenario2_df)]
+    )
     return
 
 

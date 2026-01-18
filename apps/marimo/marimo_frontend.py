@@ -7,6 +7,7 @@ app = marimo.App(width="medium")
 @app.cell
 def _():
     import marimo as mo
+
     return
 
 
@@ -16,10 +17,9 @@ def _():
     import polars.selectors as cs
     from millify import millify
 
-    from utils import (
+    from src.utils import (
         combined_property_and_stocks,
     )
-
 
     return
 

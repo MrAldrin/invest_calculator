@@ -12,7 +12,7 @@ with app.setup:
     import polars as pl
     from millify import millify
     import plotly.express as px
-    from utils import stock_investment_monthly
+    from src.utils import stock_investment_monthly
     import plotly.graph_objects as go
 
 
@@ -95,11 +95,13 @@ def _(COLORS, set_scenarios):
             # Write changes back to state
             on_change=lambda new_vals: set_scenarios(
                 lambda scenarios: [
-                    (new_vals if i == color_index else s) for i, s in enumerate(scenarios)
+                    (new_vals if i == color_index else s)
+                    for i, s in enumerate(scenarios)
                 ]
             ),
         )
         return slider_dict
+
     return (create_scenario_sliders,)
 
 
@@ -125,6 +127,7 @@ def _(COLORS):
             }
         )
         return colored_sliders
+
     return (render_scenario_sliders,)
 
 
@@ -193,6 +196,7 @@ def _(COLORS, df_alternatives):
             yaxis_title="Amount",
         )
         return fig_alternatives
+
     return (plot,)
 
 

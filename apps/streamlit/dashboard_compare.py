@@ -1,4 +1,4 @@
-# uv run streamlit run dashboard_compare.py --server.headless true
+# uv run -m streamlit run apps/streamlit/dashboard_compare.py --server.headless true
 
 import plotly.express as px
 import polars as pl
@@ -6,10 +6,10 @@ import polars.selectors as cs
 import streamlit as st
 from millify import millify
 
-from utils import (
+from src.utils import (
     combined_property_and_stocks,
 )
-from utils_dashboard import scenario_end_stats, scenario_sliders, stats_components
+from src.utils_dashboard import scenario_end_stats, scenario_sliders, stats_components
 
 
 def main():

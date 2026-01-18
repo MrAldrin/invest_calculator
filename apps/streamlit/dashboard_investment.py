@@ -6,7 +6,7 @@ import polars as pl
 import streamlit as st
 from millify import millify
 
-from utils import stock_investment_monthly
+from src.utils import stock_investment_monthly
 
 
 def main():
@@ -79,7 +79,7 @@ def main():
         labels={"value": "Amount", "month": "Month"},
         title="Portfolio Projection",
     )
-    st.plotly_chart(fig)
+    st.\
 
     # --- Show table ---
     st.subheader("Yearly Projection")
