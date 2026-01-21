@@ -1,0 +1,16 @@
+Metadata-Version: 2.4
+Name: invest-calculator
+Version: 0.1.0
+Summary: Add your description here
+Requires-Python: >=3.13
+Description-Content-Type: text/markdown
+Requires-Dist: altair>=6
+Requires-Dist: ipykernel>=6.30.1
+Requires-Dist: marimo[lsp]>=0.19
+Requires-Dist: millify>=0.1.1
+Requires-Dist: numpy>=2.4
+Requires-Dist: plotly>=6.3.0
+Requires-Dist: polars>=1.36
+Requires-Dist: pyarrow>=22
+Requires-Dist: ruff>=0.14.10
+Requires-Dist: streamlit>=1.48.1

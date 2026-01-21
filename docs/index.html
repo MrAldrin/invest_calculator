@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="./favicon.ico" />
+    <!-- Preload is necessary because we show these images when we disconnect from the server,
+    but at that point we cannot load these images from the server -->
+    <link rel="preload" href="./assets/gradient-yHQUC_QB.png" as="image" />
+    <link rel="preload" href="./assets/noise-60BoTA8O.png" as="image" />
+    <!-- Preload the fonts -->
+    <link rel="preload" href="./assets/Lora-VariableFont_wght-B2ootaw-.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/PTSans-Regular-CxL0S8W7.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/PTSans-Bold-D9fedIX3.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/FiraMono-Regular-BTCkDNvf.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/FiraMono-Medium-DU3aDxX5.ttf" as="font" crossorigin="anonymous" />
+    <link rel="preload" href="./assets/FiraMono-Bold-CLVRCuM9.ttf" as="font" crossorigin="anonymous" />
+
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="a marimo app" />
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
+    <link rel="manifest" href="./manifest.json" />
+
+    <script data-marimo="true">
+      function __resizeIframe(obj) {
+        const scrollbarHeight = 20; // Max between windows, mac, and linux
+
+        function setHeight() {
+          // Guard against race condition where iframe isn't ready
+          if (!obj.contentWindow?.document?.documentElement) {
+            return;
+          }
+          const element = obj.contentWindow.document.documentElement;
+          // If there is no vertical scrollbar, we don't need to resize the iframe
+          if (element.scrollHeight === element.clientHeight) {
+            return;
+          }
+
+          // Create a new height that includes the scrollbar height if it's visible
+          const hasHorizontalScrollbar = element.scrollWidth > element.clientWidth;
+          const newHeight = element.scrollHeight + (hasHorizontalScrollbar ? scrollbarHeight : 0);
+
+          // Only update the height if it's different from the current height
+          if (obj.style.height !== `${newHeight}px`) {
+            obj.style.height = `${newHeight}px`;
+          }
+        }
+
+        // Resize the iframe to the height of the content and bottom scrollbar height
+        setHeight();
+
+        // Resize the iframe when the content changes
+        const resizeObserver = new ResizeObserver((_entries) => {
+          setHeight();
+        });
+        // Only observe if iframe content is ready
+        if (obj.contentWindow?.document?.body) {
+          resizeObserver.observe(obj.contentWindow.document.body);
+        }
+      }
+    </script>
+    <marimo-filename hidden>notebook.py</marimo-filename>
+    <!-- TODO(Trevor): Legacy, required by VS Code plugin. Remove when plugin is updated (see marimo/server/_templates/template.py) -->
+    <marimo-version data-version="{{ version }}" hidden></marimo-version>
+    <marimo-user-config data-config="{{ user_config }}" hidden></marimo-user-config>
+    <marimo-server-token data-token="{{ server_token }}" hidden></marimo-server-token>
+    <!-- /TODO -->
+    <title>dashboard stock investement</title>
+    <script type="module" crossorigin src="./assets/index-Cq_ZnpmP.js"></script>
+    <link rel="modulepreload" crossorigin href="./assets/preload-helper-BW0IMuFq.js">
+    <link rel="modulepreload" crossorigin href="./assets/hotkeys-uKX61F1_.js">
+    <link rel="modulepreload" crossorigin href="./assets/defaultLocale-BLUna9fQ.js">
+    <link rel="modulepreload" crossorigin href="./assets/precisionRound-Cl9k9ZmS.js">
+    <link rel="modulepreload" crossorigin href="./assets/defaultLocale-DzliDDTm.js">
+    <link rel="modulepreload" crossorigin href="./assets/vega-loader.browser-C8wT63Va.js">
+    <link rel="modulepreload" crossorigin href="./assets/_Uint8Array-BGESiCQL.js">
+    <link rel="modulepreload" crossorigin href="./assets/tooltip-CrRUCOBw.js">
+    <link rel="modulepreload" crossorigin href="./assets/clsx-D0MtrJOx.js">
+    <link rel="modulepreload" crossorigin href="./assets/cn-C1rgT0yh.js">
+    <link rel="modulepreload" crossorigin href="./assets/chunk-LvLJmgfZ.js">
+    <link rel="modulepreload" crossorigin href="./assets/react-BGmjiNul.js">
+    <link rel="modulepreload" crossorigin href="./assets/compiler-runtime-DeeZ7FnK.js">
+    <link rel="modulepreload" crossorigin href="./assets/jsx-runtime-DN_bIXfG.js">
+    <link rel="modulepreload" crossorigin href="./assets/badge-DAnNhy3O.js">
+    <link rel="modulepreload" crossorigin href="./assets/useEventListener-COkmyg1v.js">
+    <link rel="modulepreload" crossorigin href="./assets/button-B8cGZzP5.js">
+    <link rel="modulepreload" crossorigin href="./assets/react-dom-C9fstfnp.js">
+    <link rel="modulepreload" crossorigin href="./assets/Combination-D1TsGrBC.js">
+    <link rel="modulepreload" crossorigin href="./assets/menu-items-9PZrU2e0.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-CBrDuocE.js">
+    <link rel="modulepreload" crossorigin href="./assets/createLucideIcon-CW2xpJ57.js">
+    <link rel="modulepreload" crossorigin href="./assets/check-CrAQug3q.js">
+    <link rel="modulepreload" crossorigin href="./assets/select-D9lTzMzP.js">
+    <link rel="modulepreload" crossorigin href="./assets/tooltip-CvjcEpZC.js">
+    <link rel="modulepreload" crossorigin href="./assets/use-toast-Bzf3rpev.js">
+    <link rel="modulepreload" crossorigin href="./assets/_getTag-BWqNuuwU.js">
+    <link rel="modulepreload" crossorigin href="./assets/_baseIsEqual-Cz9Tt_-E.js">
+    <link rel="modulepreload" crossorigin href="./assets/useEvent-DlWF5OMa.js">
+    <link rel="modulepreload" crossorigin href="./assets/invariant-C6yE60hi.js">
+    <link rel="modulepreload" crossorigin href="./assets/_baseFor-Duhs3RiJ.js">
+    <link rel="modulepreload" crossorigin href="./assets/merge-BBX6ug-N.js">
+    <link rel="modulepreload" crossorigin href="./assets/zod-Cg4WLWh2.js">
+    <link rel="modulepreload" crossorigin href="./assets/utils-pfqq9IdB.js">
+    <link rel="modulepreload" crossorigin href="./assets/constants-Bkp4R3bQ.js">
+    <link rel="modulepreload" crossorigin href="./assets/Deferred-DzyBMRsy.js">
+    <link rel="modulepreload" crossorigin href="./assets/config-D6nhy4FA.js">
+    <link rel="modulepreload" crossorigin href="./assets/uuid-ClFZlR7U.js">
+    <link rel="modulepreload" crossorigin href="./assets/DeferredRequestRegistry-B3BENoUa.js">
+    <link rel="modulepreload" crossorigin href="./assets/requests-C0HaHO6a.js">
+    <link rel="modulepreload" crossorigin href="./assets/isSymbol-BGkTcW3U.js">
+    <link rel="modulepreload" crossorigin href="./assets/toString-DlRqgfqz.js">
+    <link rel="modulepreload" crossorigin href="./assets/_hasUnicode-zBEpxwYe.js">
+    <link rel="modulepreload" crossorigin href="./assets/useLifecycle-CmDXEyIC.js">
+    <link rel="modulepreload" crossorigin href="./assets/useNonce-EAuSVK-5.js">
+    <link rel="modulepreload" crossorigin href="./assets/useTheme-CNj0G_ol.js">
+    <link rel="modulepreload" crossorigin href="./assets/once-CTiSlR1m.js">
+    <link rel="modulepreload" crossorigin href="./assets/capabilities-BmAOeMOK.js">
+    <link rel="modulepreload" crossorigin href="./assets/createReducer-DDa-hVe3.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-CAcX026F.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-DKNOF5xd.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-CI6_zMIl.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-BVf1IY4_.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-Cq_4nPfh.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-CVj-_Iiz.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-HGZzCB0y.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-RKnr9SNh.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-BuhT82Xx.js">
+    <link rel="modulepreload" crossorigin href="./assets/stex-0ac7Aukl.js">
+    <link rel="modulepreload" crossorigin href="./assets/toDate-5JckKRQn.js">
+    <link rel="modulepreload" crossorigin href="./assets/cjs-Bj40p_Np.js">
+    <link rel="modulepreload" crossorigin href="./assets/_arrayReduce-bZBYsK-u.js">
+    <link rel="modulepreload" crossorigin href="./assets/type-BdyvjzTI.js">
+    <link rel="modulepreload" crossorigin href="./assets/_baseProperty-DuoFhI7N.js">
+    <link rel="modulepreload" crossorigin href="./assets/now-6sUe0ZdD.js">
+    <link rel="modulepreload" crossorigin href="./assets/debounce-BbFlGgjv.js">
+    <link rel="modulepreload" crossorigin href="./assets/toInteger-CDcO32Gx.js">
+    <link rel="modulepreload" crossorigin href="./assets/database-zap-CaVvnK_o.js">
+    <link rel="modulepreload" crossorigin href="./assets/main-CwSdzVhm.js">
+    <link rel="modulepreload" crossorigin href="./assets/cells-CpvLRFsM.js">
+    <link rel="modulepreload" crossorigin href="./assets/ErrorBoundary-C7JBxSzd.js">
+    <link rel="modulepreload" crossorigin href="./assets/kbd-Czc5z_04.js">
+    <link rel="modulepreload" crossorigin href="./assets/useInstallPackage-RldLPyJs.js">
+    <link rel="modulepreload" crossorigin href="./assets/alert-dialog-jcHA5geR.js">
+    <link rel="modulepreload" crossorigin href="./assets/dialog-CF5DtF1E.js">
+    <link rel="modulepreload" crossorigin href="./assets/useDebounce-em3gna-v.js">
+    <link rel="modulepreload" crossorigin href="./assets/numbers-C9_R_vlY.js">
+    <link rel="modulepreload" crossorigin href="./assets/SSRProvider-DD7JA3RM.js">
+    <link rel="modulepreload" crossorigin href="./assets/context-DHfVoQfl.js">
+    <link rel="modulepreload" crossorigin href="./assets/useNumberFormatter-FoXhpyAb.js">
+    <link rel="modulepreload" crossorigin href="./assets/usePress-DTwIUo40.js">
+    <link rel="modulepreload" crossorigin href="./assets/input-B80Yt1uu.js">
+    <link rel="modulepreload" crossorigin href="./assets/ImperativeModal-DVhvP4lH.js">
+    <link rel="modulepreload" crossorigin href="./assets/cell-link-Dz1jd8Ir.js">
+    <link rel="modulepreload" crossorigin href="./assets/multi-map-CQd4MZr5.js">
+    <link rel="modulepreload" crossorigin href="./assets/alert-BEdExd6A.js">
+    <link rel="modulepreload" crossorigin href="./assets/chevron-right-CqEd11Di.js">
+    <link rel="modulepreload" crossorigin href="./assets/dropdown-menu-BP4_BZLr.js">
+    <link rel="modulepreload" crossorigin href="./assets/links-DNmjkr65.js">
+    <link rel="modulepreload" crossorigin href="./assets/datasource-Bm5VLYk2.js">
+    <link rel="modulepreload" crossorigin href="./assets/state-CJMywDNY.js">
+    <link rel="modulepreload" crossorigin href="./assets/MarimoErrorOutput-By2cOynM.js">
+    <link rel="modulepreload" crossorigin href="./assets/copy-DRhpWiOq.js">
+    <link rel="modulepreload" crossorigin href="./assets/copy-gBVL4NN-.js">
+    <link rel="modulepreload" crossorigin href="./assets/copy-icon-jWsqdLn1.js">
+    <link rel="modulepreload" crossorigin href="./assets/spinner-C1czjtp7.js">
+    <link rel="modulepreload" crossorigin href="./assets/es-Biy2OCfF.js">
+    <link rel="modulepreload" crossorigin href="./assets/focus-DmVMvj8M.js">
+    <link rel="modulepreload" crossorigin href="./assets/LazyAnyLanguageCodeMirror-Cp2punaU.js">
+    <link rel="modulepreload" crossorigin href="./assets/katex-AwOI3EvM.js">
+    <link rel="modulepreload" crossorigin href="./assets/marked.esm-CHnOtnr3.js">
+    <link rel="modulepreload" crossorigin href="./assets/chunk-OGVTOU66-CjNLT2C3.js">
+    <link rel="modulepreload" crossorigin href="./assets/markdown-renderer-ueIadUZx.js">
+    <link rel="modulepreload" crossorigin href="./assets/dist-Dg7UO_Vw.js">
+    <link rel="modulepreload" crossorigin href="./assets/command-CiJW14cR.js">
+    <link rel="modulepreload" crossorigin href="./assets/popover-DtnzNVk-.js">
+    <link rel="modulepreload" crossorigin href="./assets/useRunCells-Cm_P3BT1.js">
+    <link rel="modulepreload" crossorigin href="./assets/mode-wovPGH9p.js">
+    <link rel="modulepreload" crossorigin href="./assets/purify.es-N-2faAGj.js">
+    <link rel="modulepreload" crossorigin href="./assets/RenderHTML-B8p715zK.js">
+    <link rel="modulepreload" crossorigin href="./assets/table--_20dwBZ.js">
+    <link rel="modulepreload" crossorigin href="./assets/tabs-Ctk4D03n.js">
+    <link rel="modulepreload" crossorigin href="./assets/useAsyncData-BJJJOr9W.js">
+    <link rel="modulepreload" crossorigin href="./assets/useIframeCapabilities-CU-WWxnz.js">
+    <link rel="modulepreload" crossorigin href="./assets/error-banner-DvT0IGDZ.js">
+    <link rel="modulepreload" crossorigin href="./assets/formats-B9CrBoaO.js">
+    <link rel="modulepreload" crossorigin href="./assets/en-US-DhMN8sxe.js">
+    <link rel="modulepreload" crossorigin href="./assets/isValid-DhzaK-Y1.js">
+    <link rel="modulepreload" crossorigin href="./assets/dates-CdsE1R40.js">
+    <link rel="modulepreload" crossorigin href="./assets/download-CcAOzx6T.js">
+    <link rel="modulepreload" crossorigin href="./assets/maps-s2pQkyf5.js">
+    <link rel="modulepreload" crossorigin href="./assets/extends-B9D0JO9U.js">
+    <link rel="modulepreload" crossorigin href="./assets/emotion-is-prop-valid.esm-lG8j6oqk.js">
+    <link rel="modulepreload" crossorigin href="./assets/useDateFormatter-DsANziQR.js">
+    <link rel="modulepreload" crossorigin href="./assets/range-sshwVRcP.js">
+    <link rel="modulepreload" crossorigin href="./assets/capitalize-DQeWKRGx.js">
+    <link rel="modulepreload" crossorigin href="./assets/table-BLx7B_us.js">
+    <link rel="modulepreload" crossorigin href="./assets/JsonOutput-aB5dKsM0.js">
+    <link rel="modulepreload" crossorigin href="./assets/file-BnFXtaZZ.js">
+    <link rel="modulepreload" crossorigin href="./assets/play-BJDBXApx.js">
+    <link rel="modulepreload" crossorigin href="./assets/chat-components-ZPMBgudd.js">
+    <link rel="modulepreload" crossorigin href="./assets/isEmpty-DIxUV1UR.js">
+    <link rel="modulepreload" crossorigin href="./assets/circle-check-big-OIMTUpe6.js">
+    <link rel="modulepreload" crossorigin href="./assets/chat-display-Bru4OSNG.js">
+    <link rel="modulepreload" crossorigin href="./assets/ai-model-dropdown-BmUQTAgw.js">
+    <link rel="modulepreload" crossorigin href="./assets/renderShortcut-eU5Hsfml.js">
+    <link rel="modulepreload" crossorigin href="./assets/useDeleteCell-DMZ3UAH-.js">
+    <link rel="modulepreload" crossorigin href="./assets/icons-D4lB4En9.js">
+    <link rel="modulepreload" crossorigin href="./assets/process-output-BbPyu6EM.js">
+    <link rel="modulepreload" crossorigin href="./assets/blob-Dg_vNTSs.js">
+    <link rel="modulepreload" crossorigin href="./assets/objectWithoutPropertiesLoose-CboCOq4o.js">
+    <link rel="modulepreload" crossorigin href="./assets/esm-B3JckBtM.js">
+    <link rel="modulepreload" crossorigin href="./assets/add-cell-with-ai-DIVGdu6r.js">
+    <link rel="modulepreload" crossorigin href="./assets/chart-no-axes-column-D42sFB6d.js">
+    <link rel="modulepreload" crossorigin href="./assets/square-function-DxXFdbn8.js">
+    <link rel="modulepreload" crossorigin href="./assets/spec-qp_XZeSS.js">
+    <link rel="modulepreload" crossorigin href="./assets/column-preview-DtmhBN9V.js">
+    <link rel="modulepreload" crossorigin href="./assets/switch-D8i8UxCP.js">
+    <link rel="modulepreload" crossorigin href="./assets/toggle-G1t0cQyf.js">
+    <link rel="modulepreload" crossorigin href="./assets/globals-h0vQaXwS.js">
+    <link rel="modulepreload" crossorigin href="./assets/share-CXQVxivL.js">
+    <link rel="modulepreload" crossorigin href="./assets/memoize-DN0TMY36.js">
+    <link rel="modulepreload" crossorigin href="./assets/get-CyLJYAfP.js">
+    <link rel="modulepreload" crossorigin href="./assets/_baseSet-6FYvpjrm.js">
+    <link rel="modulepreload" crossorigin href="./assets/react-resizable-panels.browser.esm-BqxQegSf.js">
+    <link rel="modulepreload" crossorigin href="./assets/utilities.esm-DvUjESxl.js">
+    <link rel="modulepreload" crossorigin href="./assets/floating-outline-DBJNk57_.js">
+    <link rel="modulepreload" crossorigin href="./assets/useAddCell-Cc3-yOhX.js">
+    <link rel="modulepreload" crossorigin href="./assets/eye-off-D9zAYqG9.js">
+    <link rel="modulepreload" crossorigin href="./assets/plus-CHesBJpY.js">
+    <link rel="modulepreload" crossorigin href="./assets/readonly-python-code-CoXhoNRa.js">
+    <link rel="modulepreload" crossorigin href="./assets/file-video-camera-CZUg-nFA.js">
+    <link rel="modulepreload" crossorigin href="./assets/types-DJ8nLAfz.js">
+    <link rel="modulepreload" crossorigin href="./assets/label-CNZLffHW.js">
+    <link rel="modulepreload" crossorigin href="./assets/textarea-DfnWQ2d8.js">
+    <link rel="modulepreload" crossorigin href="./assets/refresh-ccw-DbW1_PHb.js">
+    <link rel="modulepreload" crossorigin href="./assets/trash-2-C-lF7BNB.js">
+    <link rel="modulepreload" crossorigin href="./assets/form-BlH9lWzg.js">
+    <link rel="modulepreload" crossorigin href="./assets/field-Clr_fqUr.js">
+    <link rel="modulepreload" crossorigin href="./assets/useBoolean-B_S7yTZz.js">
+    <link rel="modulepreload" crossorigin href="./assets/useDeepCompareMemoize-gzLRYatP.js">
+    <link rel="modulepreload" crossorigin href="./assets/types-B42u_5hF.js">
+    <link rel="modulepreload" crossorigin href="./assets/prop-types-C638SUfx.js">
+    <link rel="modulepreload" crossorigin href="./assets/es-FiXEquL2.js">
+    <link rel="modulepreload" crossorigin href="./assets/VisuallyHidden-B9t3FhTP.js">
+    <link rel="modulepreload" crossorigin href="./assets/hasIn-DydgU7lx.js">
+    <link rel="modulepreload" crossorigin href="./assets/_baseFlatten-CLPh0yMf.js">
+    <link rel="modulepreload" crossorigin href="./assets/flatten-Buk63LQO.js">
+    <link rel="modulepreload" crossorigin href="./assets/pick-DeQioq0G.js">
+    <link rel="modulepreload" crossorigin href="./assets/code-xml-MBUyxNtK.js">
+    <link rel="modulepreload" crossorigin href="./assets/download-DobaYJPt.js">
+    <link rel="modulepreload" crossorigin href="./assets/house-CncUa_LL.js">
+    <link rel="modulepreload" crossorigin href="./assets/refresh-cw-Din9uFKE.js">
+    <link rel="modulepreload" crossorigin href="./assets/settings-MTlHVxz3.js">
+    <link rel="modulepreload" crossorigin href="./assets/square-leQTJTJJ.js">
+    <link rel="modulepreload" crossorigin href="./assets/triangle-alert-CbD0f2J6.js">
+    <link rel="modulepreload" crossorigin href="./assets/bundle.esm-B0Sy2M4C.js">
+    <link rel="stylesheet" crossorigin href="./assets/cells-jmgGt1lS.css">
+    <link rel="stylesheet" crossorigin href="./assets/markdown-renderer-DdDKmWlR.css">
+    <link rel="stylesheet" crossorigin href="./assets/JsonOutput-B7vuddcd.css">
+    <link rel="stylesheet" crossorigin href="./assets/index-DDc_1b-N.css">
+  <marimo-wasm hidden=""></marimo-wasm>
+    <script>
+        if (window.location.protocol === 'file:') {
+            alert('Warning: This file must be served by an HTTP server to function correctly.');
+        }
+    </script>
+    
+    <style>
+        #save-button {
+            display: none !important;
+        }
+        #filename-input {
+            display: none !important;
+        }
+    </style>
+    <marimo-code hidden="">import%20marimo%0A%0A__generated_with%20%3D%20%220.19.4%22%0Aapp%20%3D%20marimo.App(%0A%20%20%20%20width%3D%22columns%22%2C%0A%20%20%20%20layout_file%3D%22data%3Aapplication%2Fjson%3Bbase64%2CewogICJ0eXBlIjogImdyaWQiLAogICJkYXRhIjogewogICAgImNvbHVtbnMiOiAyNCwKICAgICJyb3dIZWlnaHQiOiAyMCwKICAgICJtYXhXaWR0aCI6IDE0MDAsCiAgICAiYm9yZGVyZWQiOiB0cnVlLAogICAgImNlbGxzIjogWwogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogWwogICAgICAgICAgMSwKICAgICAgICAgIDEsCiAgICAgICAgICAxOCwKICAgICAgICAgIDMxCiAgICAgICAgXQogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogWwogICAgICAgICAgMiwKICAgICAgICAgIDMzLAogICAgICAgICAgMTgsCiAgICAgICAgICAyNQogICAgICAgIF0KICAgICAgfSwKICAgICAgewogICAgICAgICJwb3NpdGlvbiI6IFsKICAgICAgICAgIDE5LAogICAgICAgICAgMTYsCiAgICAgICAgICA0LAogICAgICAgICAgNQogICAgICAgIF0KICAgICAgfQogICAgXQogIH0KfQ%3D%3D%22%2C%0A)%0A%0Awith%20app.setup%3A%0A%20%20%20%20import%20micropip%0A%0A%0A%40app.cell%0Adef%20_()%3A%0A%20%20%20%20import%20marimo%20as%20mo%0A%20%20%20%20return%20(mo%2C)%0A%0A%0A%40app.cell%0Aasync%20def%20_()%3A%0A%20%20%20%20await%20micropip.install(%22polars%22)%0A%20%20%20%20await%20micropip.install(%22plotly%22)%0A%20%20%20%20import%20polars%20as%20pl%0A%20%20%20%20import%20plotly.graph_objects%20as%20go%0A%20%20%20%20return%20go%2C%20pl%0A%0A%0A%40app.cell%0Adef%20_()%3A%0A%20%20%20%20COLORS%20%3D%20%5B%0A%20%20%20%20%20%20%20%20%22%233498db%22%2C%20%20%23%20blue%0A%20%20%20%20%20%20%20%20%22%23e74c3c%22%2C%20%20%23%20red%0A%20%20%20%20%20%20%20%20%22%239b59b6%22%2C%20%20%23%20purple%0A%20%20%20%20%20%20%20%20%22%23f39c12%22%2C%20%20%23%20orange%0A%20%20%20%20%20%20%20%20%22%232ecc71%22%2C%20%20%23%20green%0A%20%20%20%20%20%20%20%20%22%231abc9c%22%2C%20%20%23%20turquoise%0A%20%20%20%20%20%20%20%20%22%23e67e22%22%2C%20%20%23%20dark%20orange%0A%20%20%20%20%20%20%20%20%22%2395a5a6%22%2C%20%20%23%20gray%0A%20%20%20%20%5D%0A%0A%20%20%20%20SHOW_VALUE%20%3D%20True%0A%20%20%20%20FULL_WIDTH%20%3D%20True%0A%20%20%20%20return%20COLORS%2C%20FULL_WIDTH%2C%20SHOW_VALUE%0A%0A%0A%40app.cell%0Adef%20_(pl)%3A%0A%20%20%20%20def%20apply_inflation(%0A%20%20%20%20%20%20%20%20df%3A%20pl.DataFrame%2C%20annual_inflation%3A%20float%2C%20columns%3A%20list%5Bstr%5D%0A%20%20%20%20)%20-%3E%20pl.DataFrame%3A%0A%20%20%20%20%20%20%20%20if%20annual_inflation%20%3D%3D%200.0%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20return%20df%0A%0A%20%20%20%20%20%20%20%20monthly_inflation%20%3D%20(1%20%2B%20annual_inflation)%20**%20(1%20%2F%2012)%20-%201%0A%20%20%20%20%20%20%20%20%23%20Assumes%20df%20has%20a%20%22month%22%20column%20starting%20at%200.%20This%20speeds%20up%20computation.%0A%20%20%20%20%20%20%20%20inflation_factor%20%3D%20(1%20%2B%20monthly_inflation)%20**%20pl.col(%22month%22)%0A%20%20%20%20%20%20%20%20df%20%3D%20df.with_columns(%0A%20%20%20%20%20%20%20%20%20%20%20%20%5B(pl.col(col)%20%2F%20inflation_factor).alias(col)%20for%20col%20in%20columns%5D%0A%20%20%20%20%20%20%20%20)%0A%0A%20%20%20%20%20%20%20%20return%20df%0A%20%20%20%20return%20(apply_inflation%2C)%0A%0A%0A%40app.cell%0Adef%20_(apply_inflation%2C%20pl)%3A%0A%20%20%20%20def%20stock_investment_monthly(%0A%20%20%20%20%20%20%20%20initial_investment%3A%20float%2C%0A%20%20%20%20%20%20%20%20monthly_contribution%3A%20float%2C%0A%20%20%20%20%20%20%20%20annual_return%3A%20float%2C%0A%20%20%20%20%20%20%20%20years%3A%20int%2C%0A%20%20%20%20%20%20%20%20annual_inflation%3A%20float%20%3D%200.0%2C%0A%20%20%20%20%20%20%20%20tax_rate%3A%20float%20%3D%200.3784%2C%20%20%23%2037.84%25%20tax%20on%20returns%0A%20%20%20%20)%20-%3E%20pl.DataFrame%3A%0A%20%20%20%20%20%20%20%20n_months%20%3D%20years%20*%2012%0A%20%20%20%20%20%20%20%20monthly_return%20%3D%20(1%20%2B%20annual_return)%20**%20(1%20%2F%2012)%20-%201%0A%0A%20%20%20%20%20%20%20%20%23%20Create%20base%20dataframe%20with%20months%0A%20%20%20%20%20%20%20%20df%20%3D%20pl.DataFrame(%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22month%22%3A%20pl.arange(0%2C%20n_months%20%2B%201%2C%20eager%3DTrue)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20)%0A%0A%20%20%20%20%20%20%20%20df%20%3D%20(%0A%20%20%20%20%20%20%20%20%20%20%20%20df.with_columns(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20(pl.col(%22month%22)%20%2F%2F%2012).alias(%22year%22)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20Balance%20calculation%20using%20compound%20interest%20formula%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20initial_investment%20*%20((1%20%2B%20monthly_return)%20**%20pl.col(%22month%22))%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%2B%20monthly_contribution%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20*%20(((1%20%2B%20monthly_return)%20**%20pl.col(%22month%22)%20-%201)%20%2F%20monthly_return)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20).alias(%22balance%22)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%23%20Contributions%3A%20simple%20linear%20growth%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20(initial_investment%20%2B%20monthly_contribution%20*%20pl.col(%22month%22)).alias(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22contributions_cum%22%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20.with_columns(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20(pl.col(%22balance%22)%20-%20pl.col(%22contributions_cum%22)).alias(%22returns_cum%22)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20.with_columns(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20(pl.col(%22returns_cum%22)%20*%20(1%20-%20tax_rate)).alias(%22returns_after_tax%22)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20pl.col(%22contributions_cum%22)%20%2B%20pl.col(%22returns_cum%22)%20*%20(1%20-%20tax_rate)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20).alias(%22stock_equity%22)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20df%20%3D%20apply_inflation(%0A%20%20%20%20%20%20%20%20%20%20%20%20df%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20annual_inflation%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22balance%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22contributions_cum%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22returns_cum%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22returns_after_tax%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22stock_equity%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%2C%0A%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20return%20df%0A%20%20%20%20return%20(stock_investment_monthly%2C)%0A%0A%0A%40app.cell%0Adef%20_(mo%2C%20set_scenarios)%3A%0A%20%20%20%20def%20create_scenario_sliders(values%2C%20color_index)%3A%0A%20%20%20%20%20%20%20%20_show_value%20%3D%20True%0A%20%20%20%20%20%20%20%20_full_width%20%3D%20True%0A%20%20%20%20%20%20%20%20slider_dict%20%3D%20mo.ui.dictionary(%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22initial_stock_investment%22%3A%20mo.ui.slider(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20start%3D0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20stop%3D2_000_000%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20value%3Dvalues%5B%22initial_stock_investment%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20step%3D50_000%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20debounce%3DTrue%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20show_value%3D_show_value%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20full_width%3D_full_width%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20label%3Df%22Initial%20stock%20investment%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22monthly_stock_investment%22%3A%20mo.ui.slider(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20start%3D0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20stop%3D50_000%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20value%3Dvalues%5B%22monthly_stock_investment%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20step%3D1_000%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20debounce%3DTrue%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20show_value%3D_show_value%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20full_width%3D_full_width%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20label%3Df%22Monthly%20stock%20investment%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22annual_stock_return%22%3A%20mo.ui.slider(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20start%3D0.0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20stop%3D15.0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20value%3Dvalues%5B%22annual_stock_return%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20step%3D0.5%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20debounce%3DTrue%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20show_value%3D_show_value%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20full_width%3D_full_width%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20label%3D%22Annual%20stock%20return%20(%25)%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22annual_inflation%22%3A%20mo.ui.slider(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20start%3D0.0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20stop%3D10.0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20value%3Dvalues%5B%22annual_inflation%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20step%3D0.1%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20debounce%3DTrue%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20show_value%3D_show_value%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20full_width%3D_full_width%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20label%3D%22Annual%20inflation%20(%25)%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%23%20Write%20changes%20back%20to%20state%0A%20%20%20%20%20%20%20%20%20%20%20%20on_change%3Dlambda%20new_vals%3A%20set_scenarios(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20lambda%20scenarios%3A%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20(new_vals%20if%20i%20%3D%3D%20color_index%20else%20s)%20for%20i%2C%20s%20in%20enumerate(scenarios)%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20return%20slider_dict%0A%20%20%20%20return%20(create_scenario_sliders%2C)%0A%0A%0A%40app.cell%0Adef%20_(COLORS%2C%20mo)%3A%0A%20%20%20%20def%20render_scenario_sliders(scenario_dict%2C%20index)%3A%0A%20%20%20%20%20%20%20%20color%20%3D%20COLORS%5Bindex%20%25%20len(COLORS)%5D%0A%20%20%20%20%20%20%20%20rendered_sliders%20%3D%20mo.hstack(%0A%20%20%20%20%20%20%20%20%20%20%20%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20scenario_dict%5B%22initial_stock_investment%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20scenario_dict%5B%22monthly_stock_investment%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20scenario_dict%5B%22annual_stock_return%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20scenario_dict%5B%22annual_inflation%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%23%20return%20rendered_sliders%0A%20%20%20%20%20%20%20%20colored_sliders%20%3D%20mo.vstack(%5Brendered_sliders%5D).style(%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22border-left%22%3A%20f%224px%20solid%20%7Bcolor%7D%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22padding-left%22%3A%20%2210px%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22margin%22%3A%20%2210px%200%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20return%20colored_sliders%0A%20%20%20%20return%20(render_scenario_sliders%2C)%0A%0A%0A%40app.cell%0Adef%20_(stock_investment_monthly)%3A%0A%20%20%20%20def%20wrapper_stock_investment_monthly(sliders%2C%20time_slider)%3A%0A%20%20%20%20%20%20%20%20df%20%3D%20stock_investment_monthly(%0A%20%20%20%20%20%20%20%20%20%20%20%20initial_investment%3Dsliders%5B%22initial_stock_investment%22%5D.value%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20monthly_contribution%3Dsliders%5B%22monthly_stock_investment%22%5D.value%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20annual_return%3Dsliders%5B%22annual_stock_return%22%5D.value%20%2F%20100%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20years%3Dtime_slider.value%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20annual_inflation%3Dsliders%5B%22annual_inflation%22%5D.value%20%2F%20100%2C%0A%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20return%20df%0A%20%20%20%20return%20(wrapper_stock_investment_monthly%2C)%0A%0A%0A%40app.cell%0Adef%20_(alternatives%2C%20pl%2C%20time_slider%2C%20wrapper_stock_investment_monthly)%3A%0A%20%20%20%20df_alternatives%20%3D%20%5B%5D%0A%20%20%20%20for%20i%2C%20alt%20in%20enumerate(alternatives)%3A%0A%20%20%20%20%20%20%20%20df%20%3D%20wrapper_stock_investment_monthly(alt%2C%20time_slider)%0A%20%20%20%20%20%20%20%20df%20%3D%20df.with_columns(pl.lit(f%22Alternative%20%7Bi%20%2B%201%7D%22).alias(%22scenario%22))%0A%20%20%20%20%20%20%20%20df_alternatives.append(df)%0A%20%20%20%20return%20(df_alternatives%2C)%0A%0A%0A%40app.cell%0Adef%20_(COLORS%2C%20df_alternatives%2C%20go)%3A%0A%20%20%20%20def%20plot()%3A%0A%20%20%20%20%20%20%20%20fig_alternatives%20%3D%20go.Figure()%0A%0A%20%20%20%20%20%20%20%20for%20i%2C%20df%20in%20enumerate(df_alternatives)%3A%0A%20%20%20%20%20%20%20%20%20%20%20%20scenario_name%20%3D%20f%22Alt%20%7Bi%20%2B%201%7D%22%0A%20%20%20%20%20%20%20%20%20%20%20%20color%20%3D%20COLORS%5Bi%20%25%20len(COLORS)%5D%0A%0A%20%20%20%20%20%20%20%20%20%20%20%20fig_alternatives.add_trace(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20go.Scatter(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%3Ddf%5B%22month%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20y%3Ddf%5B%22balance%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20name%3Df%22%7Bscenario_name%7D%20-%20Balance%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20mode%3D%22lines%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20line%3Ddict(color%3Dcolor)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20fig_alternatives.add_trace(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20go.Scatter(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%3Ddf%5B%22month%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20y%3Ddf%5B%22returns_cum%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20name%3Df%22%7Bscenario_name%7D%20-%20Returns%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20mode%3D%22lines%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20line%3Ddict(dash%3D%22dash%22%2C%20color%3Dcolor)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20fig_alternatives.add_trace(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20go.Scatter(%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20x%3Ddf%5B%22month%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20y%3Ddf%5B%22contributions_cum%22%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20name%3Df%22%7Bscenario_name%7D%20-%20Contributions%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20mode%3D%22lines%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20line%3Ddict(dash%3D%22dot%22%2C%20color%3Dcolor)%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20%20%20%20%20)%0A%0A%20%20%20%20%20%20%20%20fig_alternatives.update_layout(%0A%20%20%20%20%20%20%20%20%20%20%20%20title%3D%22Portfolio%20Projections%20-%20All%20Alternatives%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20xaxis_title%3D%22Month%22%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20yaxis_title%3D%22Amount%22%2C%0A%20%20%20%20%20%20%20%20)%0A%20%20%20%20%20%20%20%20return%20fig_alternatives%0A%20%20%20%20return%20(plot%2C)%0A%0A%0A%40app.cell%0Adef%20_(mo%2C%20plot)%3A%0A%20%20%20%20figure%20%3D%20plot()%0A%20%20%20%20mo.ui.plotly(figure)%0A%20%20%20%20return%0A%0A%0A%40app.cell(column%3D1)%0Adef%20_(mo)%3A%0A%20%20%20%20get_scenarios%2C%20set_scenarios%20%3D%20mo.state(%0A%20%20%20%20%20%20%20%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22initial_stock_investment%22%3A%20500_000%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22monthly_stock_investment%22%3A%205_000%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22annual_stock_return%22%3A%2010.0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22annual_inflation%22%3A%202.0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20)%0A%20%20%20%20return%20get_scenarios%2C%20set_scenarios%0A%0A%0A%40app.cell%0Adef%20_(mo%2C%20set_scenarios)%3A%0A%20%20%20%20add_button%20%3D%20mo.ui.button(%0A%20%20%20%20%20%20%20%20label%3D%22Add%20alternative%22%2C%0A%20%20%20%20%20%20%20%20on_change%3Dlambda%20_%3A%20set_scenarios(%0A%20%20%20%20%20%20%20%20%20%20%20%20lambda%20scenarios%3A%20scenarios%0A%20%20%20%20%20%20%20%20%20%20%20%20%2B%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20scenarios%5B-1%5D.copy()%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20if%20scenarios%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20else%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22initial_stock_investment%22%3A%20500_000%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22monthly_stock_investment%22%3A%205_000%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22annual_stock_return%22%3A%2010.0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%22annual_inflation%22%3A%202.0%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20)%0A%0A%20%20%20%20remove_button%20%3D%20mo.ui.button(%0A%20%20%20%20%20%20%20%20label%3D%22Remove%20alternative%22%2C%0A%20%20%20%20%20%20%20%20on_change%3Dlambda%20_%3A%20set_scenarios(%0A%20%20%20%20%20%20%20%20%20%20%20%20lambda%20scenarios%3A%20scenarios%5B%3A-1%5D%20if%20scenarios%20else%20scenarios%0A%20%20%20%20%20%20%20%20)%2C%0A%20%20%20%20)%0A%20%20%20%20return%20add_button%2C%20remove_button%0A%0A%0A%40app.cell%0Adef%20_(create_scenario_sliders%2C%20get_scenarios%2C%20mo)%3A%0A%20%20%20%20scenarios%20%3D%20get_scenarios()%0A%20%20%20%20alternatives%20%3D%20mo.ui.array(%0A%20%20%20%20%20%20%20%20%5Bcreate_scenario_sliders(s%2C%20i)%20for%20i%2C%20s%20in%20enumerate(scenarios)%5D%0A%20%20%20%20)%0A%20%20%20%20return%20(alternatives%2C)%0A%0A%0A%40app.cell%0Adef%20_(add_button%2C%20alternatives%2C%20mo%2C%20remove_button%2C%20render_scenario_sliders)%3A%0A%20%20%20%20mo.vstack(%0A%20%20%20%20%20%20%20%20%5B%0A%20%20%20%20%20%20%20%20%20%20%20%20*%5Brender_scenario_sliders(alt%2C%20i)%20for%20i%2C%20alt%20in%20enumerate(alternatives)%5D%2C%0A%20%20%20%20%20%20%20%20%20%20%20%20mo.hstack(%5Badd_button%2C%20remove_button%5D)%2C%0A%20%20%20%20%20%20%20%20%5D%0A%20%20%20%20)%0A%20%20%20%20return%0A%0A%0A%40app.cell%0Adef%20_(FULL_WIDTH%2C%20SHOW_VALUE%2C%20mo)%3A%0A%20%20%20%20time_slider%20%3D%20mo.ui.slider(%0A%20%20%20%20%20%20%20%20start%3D1%2C%0A%20%20%20%20%20%20%20%20stop%3D25%2C%0A%20%20%20%20%20%20%20%20value%3D20%2C%0A%20%20%20%20%20%20%20%20debounce%3DTrue%2C%0A%20%20%20%20%20%20%20%20show_value%3DSHOW_VALUE%2C%0A%20%20%20%20%20%20%20%20full_width%3DFULL_WIDTH%2C%0A%20%20%20%20%20%20%20%20label%3D%22Projection%20horizon%20(years)%22%2C%0A%20%20%20%20)%0A%20%20%20%20time_slider%0A%20%20%20%20return%20(time_slider%2C)%0A%0A%0Aif%20__name__%20%3D%3D%20%22__main__%22%3A%0A%20%20%20%20app.run()%0A</marimo-code></head>
+  <body>
+    <div id="root"></div>
+    <!-- This is a portal for the data editor to render in -->
+    <div id="portal" data-testid="glide-portal" style="position: fixed; left: 0; top: 0; z-index: 9999"></div>
+    <script data-marimo="true">
+      window.__MARIMO_MOUNT_CONFIG__ = {
+            "filename": "notebook.py",
+            "mode": "read",
+            "version": "0.19.4",
+            "serverToken": "unused",
+            "config": {"ai": {"custom_providers": {}, "models": {"custom_models": [], "displayed_models": []}}, "completion": {"activate_on_typing": true, "copilot": false, "signature_hint_on_typing": false}, "diagnostics": {"sql_linter": true}, "display": {"cell_output": "below", "code_editor_font_size": 14, "dataframes": "rich", "default_table_max_columns": 51, "default_table_page_size": 10, "default_width": "compact", "reference_highlighting": true, "theme": "system"}, "formatting": {"line_length": 79}, "keymap": {"overrides": {}, "preset": "default"}, "language_servers": {"pylsp": {"enable_flake8": false, "enable_mypy": true, "enable_pydocstyle": false, "enable_pyflakes": false, "enable_pylint": false, "enable_ruff": true, "enabled": false}}, "mcp": {"mcpServers": {}, "presets": []}, "package_management": {"manager": "uv"}, "runtime": {"auto_instantiate": false, "auto_reload": "off", "default_sql_output": "auto", "on_cell_change": "autorun", "output_max_bytes": 8000000, "reactive_tests": true, "std_stream_max_bytes": 1000000, "watcher_on_save": "lazy"}, "save": {"autosave": "off", "autosave_delay": 1000, "format_on_save": false}, "server": {"browser": "default", "follow_symlink": false}, "snippets": {"custom_paths": [], "include_default_snippets": true}},
+            "configOverrides": {},
+            "appConfig": {"layout_file": "data:application/json;base64,ewogICJ0eXBlIjogImdyaWQiLAogICJkYXRhIjogewogICAgImNvbHVtbnMiOiAyNCwKICAgICJyb3dIZWlnaHQiOiAyMCwKICAgICJtYXhXaWR0aCI6IDE0MDAsCiAgICAiYm9yZGVyZWQiOiB0cnVlLAogICAgImNlbGxzIjogWwogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogWwogICAgICAgICAgMSwKICAgICAgICAgIDEsCiAgICAgICAgICAxOCwKICAgICAgICAgIDMxCiAgICAgICAgXQogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogbnVsbAogICAgICB9LAogICAgICB7CiAgICAgICAgInBvc2l0aW9uIjogWwogICAgICAgICAgMiwKICAgICAgICAgIDMzLAogICAgICAgICAgMTgsCiAgICAgICAgICAyNQogICAgICAgIF0KICAgICAgfSwKICAgICAgewogICAgICAgICJwb3NpdGlvbiI6IFsKICAgICAgICAgIDE5LAogICAgICAgICAgMTYsCiAgICAgICAgICA0LAogICAgICAgICAgNQogICAgICAgIF0KICAgICAgfQogICAgXQogIH0KfQ==", "sql_output": "auto", "width": "columns"},
+            "view": {"showAppCode": false},
+            "notebook": null,
+            "session": null,
+            "runtimeConfig": null,
+        };
+    </script>
+  </body>
+</html>
