@@ -34,8 +34,8 @@ def _(FULL_WIDTH, SHOW_VALUE, mo):
 
 
 @app.cell
-def _(plot):
-    figure = plot()
+def _(df_alternatives, plot):
+    figure = plot(df_alternatives=df_alternatives)
     figure
     return
 
@@ -109,7 +109,7 @@ def _(mo, set_scenarios):
 def _(create_scenario_sliders, get_scenarios, mo):
     scenarios = get_scenarios()
     alternatives = mo.ui.array(
-        [create_scenario_sliders(s, i) for i, s in enumerate(scenarios)]
+        [create_scenario_sliders(values=s, color_index=i) for i, s in enumerate(scenarios)]
     )
     return (alternatives,)
 
@@ -168,8 +168,8 @@ def _():
 
 @app.cell
 def _(COLORS, mo):
-    def render_scenario_sliders(scenario_dict, index):
-        color = COLORS[index % len(COLORS)]
+    def render_scenario_sliders(scenario_dict, color_index):
+        color = COLORS[color_index % len(COLORS)]
         rendered_sliders = mo.hstack(
             [
                 scenario_dict["initial_stock_investment"],
@@ -250,8 +250,22 @@ def _(mo, set_scenarios):
 
 
 @app.cell
-def _(COLORS, alt, df_alternatives, pl):
-    def plot():
+def _(stock_investment_monthly):
+    def wrapper_stock_investment_monthly(sliders, time_slider):
+        df = stock_investment_monthly(
+            initial_investment=sliders["initial_stock_investment"].value,
+            monthly_contribution=sliders["monthly_stock_investment"].value,
+            annual_return=sliders["annual_stock_return"].value / 100,
+            years=time_slider.value,
+            annual_inflation=sliders["annual_inflation"].value / 100,
+        )
+        return df
+    return (wrapper_stock_investment_monthly,)
+
+
+@app.cell
+def _(COLORS, alt, pl):
+    def plot(df_alternatives, COLORS=COLORS):
         # Combine all dataframes
         full_df = pl.concat(df_alternatives)
 
@@ -278,7 +292,6 @@ def _(COLORS, alt, df_alternatives, pl):
             .encode(
                 x="month:Q",
                 y="returns_cum:Q",
-                # CHANGED: Same color encoding pattern
                 color=alt.Color(
                     "Alternative:N",
                     scale=alt.Scale(range=COLORS[: len(df_alternatives)]),
@@ -295,7 +308,6 @@ def _(COLORS, alt, df_alternatives, pl):
             .encode(
                 x="month:Q",
                 y="contributions_cum:Q",
-                # CHANGED: Same color encoding pattern
                 color=alt.Color(
                     "Alternative:N",
                     scale=alt.Scale(range=COLORS[: len(df_alternatives)]),
@@ -316,20 +328,6 @@ def _(COLORS, alt, df_alternatives, pl):
 
         return chart
     return (plot,)
-
-
-@app.cell
-def _(stock_investment_monthly):
-    def wrapper_stock_investment_monthly(sliders, time_slider):
-        df = stock_investment_monthly(
-            initial_investment=sliders["initial_stock_investment"].value,
-            monthly_contribution=sliders["monthly_stock_investment"].value,
-            annual_return=sliders["annual_stock_return"].value / 100,
-            years=time_slider.value,
-            annual_inflation=sliders["annual_inflation"].value / 100,
-        )
-        return df
-    return (wrapper_stock_investment_monthly,)
 
 
 @app.cell(column=3)
