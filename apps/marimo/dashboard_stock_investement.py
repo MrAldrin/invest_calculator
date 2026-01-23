@@ -305,7 +305,15 @@ def _(COLORS, alt, pl):
             alt.Chart(long_df)
             .mark_line()
             .encode(
-                x=alt.X("month:Q", title="Month"),
+                x=alt.X(
+                    "month:Q",
+                    title="Year",
+                    axis=alt.Axis(
+                        labelExpr="datum.value / 12",
+                        values=list(range(0, 1000, 12)),
+                        format="d",
+                    ),
+                ),
                 y=alt.Y("Amount:Q", title="Amount"),
                 color=alt.Color(
                     "Alternative:N",
