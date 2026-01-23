@@ -98,7 +98,7 @@ def _(mo):
         ]
         * 5
     )
-    return (get_scenarios,)
+    return get_scenarios, set_scenarios
 
 
 @app.cell
@@ -211,7 +211,7 @@ def _(COLORS, mo):
 
 
 @app.cell
-def _(mo):
+def _(mo, set_scenarios):
     def create_scenario_sliders(values, color_index):
         _show_value = True
         _full_width = True
@@ -258,12 +258,12 @@ def _(mo):
                     label="Annual inflation (%)",
                 ),
             },
-            # Write changes back to state
-            # on_change=lambda new_vals: set_scenarios(
-            #     lambda scenarios: [
-            #         (new_vals if i == color_index else s) for i, s in enumerate(scenarios)
-            #     ]
-            # ),
+            # Needed to not reset sliders when an alternative is added or removed
+            on_change=lambda new_vals: set_scenarios(
+                lambda scenarios: [
+                    (new_vals if i == color_index else s) for i, s in enumerate(scenarios)
+                ]
+            ),
         )
         return slider_dict
     return (create_scenario_sliders,)
@@ -286,60 +286,48 @@ def _(stock_investment_monthly):
 @app.cell
 def _(COLORS, alt, pl):
     def plot(df_alternatives, COLORS=COLORS):
-        # Combine all dataframes
         full_df = pl.concat(df_alternatives)
+        # Transform from wide to long
+        long_df = full_df.unpivot(
+            index=["month", "Alternative"],
+            on=["balance", "returns_cum", "contributions_cum"],
+            variable_name="Metric",
+            value_name="Amount",
+        )
+        selection = alt.selection_point(
+            fields=["Alternative"], bind="legend", toggle="true"
+        )
+        selection_metric = alt.selection_point(
+            fields=["Metric"], bind="legend", toggle="true"
+        )
 
-        # Balance line
-        balance = (
-            alt.Chart(full_df)
+        chart = (
+            alt.Chart(long_df)
             .mark_line()
             .encode(
                 x=alt.X("month:Q", title="Month"),
-                y=alt.Y("balance:Q", title="Amount"),
+                y=alt.Y("Amount:Q", title="Amount"),
                 color=alt.Color(
                     "Alternative:N",
                     scale=alt.Scale(range=COLORS[: len(df_alternatives)]),
                     legend=alt.Legend(title="Scenario"),
                 ),
-                tooltip=["Alternative:N", "month:Q", "balance:Q"],
+                # This creates the second legend and controls line style
+                strokeDash=alt.StrokeDash(
+                    "Metric:N",
+                    scale=alt.Scale(
+                        domain=["balance", "returns_cum", "contributions_cum"],
+                        range=[[], [5, 5], [2, 2]],  # Solid, Dashed, Dotted
+                    ),
+                    legend=alt.Legend(title="Metric Toggle"),
+                ),
+                tooltip=["Alternative:N", "Metric:N", "month:Q", "Amount:Q"],
+                # Apply both interactive filters
+                opacity=alt.condition(
+                    selection & selection_metric, alt.value(1), alt.value(0.1)
+                ),
             )
-        )
-
-        # Returns line (dashed)
-        returns = (
-            alt.Chart(full_df)
-            .mark_line(strokeDash=[5, 5])
-            .encode(
-                x="month:Q",
-                y="returns_cum:Q",
-                color=alt.Color(
-                    "Alternative:N",
-                    scale=alt.Scale(range=COLORS[: len(df_alternatives)]),
-                    legend=None,
-                ),  # Hide legend for this layer
-                tooltip=["Alternative:N", "month:Q", "returns_cum:Q"],
-            )
-        )
-
-        # Contributions line (dotted)
-        contributions = (
-            alt.Chart(full_df)
-            .mark_line(strokeDash=[2, 2])
-            .encode(
-                x="month:Q",
-                y="contributions_cum:Q",
-                color=alt.Color(
-                    "Alternative:N",
-                    scale=alt.Scale(range=COLORS[: len(df_alternatives)]),
-                    legend=None,
-                ),  # Hide legend for this layer
-                tooltip=["Alternative:N", "month:Q", "contributions_cum:Q"],
-            )
-        )
-
-        # Combine all charts
-        chart = (
-            (balance + returns + contributions)
+            .add_params(selection, selection_metric)  # Register both legends
             .properties(
                 title="Portfolio Projections - All Alternatives", width=600, height=400
             )
