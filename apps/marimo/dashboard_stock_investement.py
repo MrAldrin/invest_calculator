@@ -41,14 +41,37 @@ def _(df_alternatives, plot):
 
 
 @app.cell
-def _(add_button, alternatives, mo, remove_button, render_scenario_sliders):
+def _(
+    add_button,
+    alternatives,
+    get_visible_count,
+    mo,
+    remove_button,
+    render_scenario_sliders,
+):
+    left_buttons = []
+    right_buttons = []
+
+    if get_visible_count() < 5:  # CHANGED: Add button goes on the left
+        left_buttons.append(add_button)
+    if get_visible_count() > 1:  # CHANGED: Remove button goes on the right
+        right_buttons.append(remove_button)
+
     mo.vstack(
         [
             *[
                 render_scenario_sliders(alternative, i)
                 for i, alternative in enumerate(alternatives)
             ],
-            mo.hstack([add_button, remove_button]),
+            # CHANGED: Create hstack with left and right groups, justified between
+            mo.hstack(
+                [
+                    mo.hstack(left_buttons) if left_buttons else mo.Html(""),
+                    mo.hstack(right_buttons, justify="end")
+                    if right_buttons
+                    else mo.Html(""),
+                ]
+            ),
         ]
     )
     return
@@ -73,43 +96,40 @@ def _(mo):
                 "annual_inflation": 2.0,
             }
         ]
+        * 5
     )
-    return get_scenarios, set_scenarios
+    return (get_scenarios,)
 
 
 @app.cell
-def _(mo, set_scenarios):
+def _(mo):
+    get_visible_count, set_visible_count = mo.state(1)
+    return get_visible_count, set_visible_count
+
+
+@app.cell
+def _(mo, set_visible_count):
     add_button = mo.ui.button(
         label="Add alternative",
-        on_change=lambda _: set_scenarios(
-            lambda scenarios: scenarios
-            + [
-                scenarios[-1].copy()
-                if scenarios
-                else {
-                    "initial_stock_investment": 500_000,
-                    "monthly_stock_investment": 5_000,
-                    "annual_stock_return": 10.0,
-                    "annual_inflation": 2.0,
-                }
-            ]
-        ),
+        on_change=lambda _: set_visible_count(lambda count: min(count + 1, 5)),
     )
 
     remove_button = mo.ui.button(
         label="Remove alternative",
-        on_change=lambda _: set_scenarios(
-            lambda scenarios: scenarios[:-1] if scenarios else scenarios
-        ),
+        on_change=lambda _: set_visible_count(lambda count: max(count - 1, 1)),
     )
     return add_button, remove_button
 
 
 @app.cell
-def _(create_scenario_sliders, get_scenarios, mo):
+def _(create_scenario_sliders, get_scenarios, get_visible_count, mo):
     scenarios = get_scenarios()
+    visible_count = get_visible_count()
     alternatives = mo.ui.array(
-        [create_scenario_sliders(values=s, color_index=i) for i, s in enumerate(scenarios)]
+        [
+            create_scenario_sliders(values=s, color_index=i)
+            for i, s in enumerate(scenarios[:visible_count])
+        ]
     )
     return (alternatives,)
 
@@ -191,7 +211,7 @@ def _(COLORS, mo):
 
 
 @app.cell
-def _(mo, set_scenarios):
+def _(mo):
     def create_scenario_sliders(values, color_index):
         _show_value = True
         _full_width = True
@@ -239,11 +259,11 @@ def _(mo, set_scenarios):
                 ),
             },
             # Write changes back to state
-            on_change=lambda new_vals: set_scenarios(
-                lambda scenarios: [
-                    (new_vals if i == color_index else s) for i, s in enumerate(scenarios)
-                ]
-            ),
+            # on_change=lambda new_vals: set_scenarios(
+            #     lambda scenarios: [
+            #         (new_vals if i == color_index else s) for i, s in enumerate(scenarios)
+            #     ]
+            # ),
         )
         return slider_dict
     return (create_scenario_sliders,)
