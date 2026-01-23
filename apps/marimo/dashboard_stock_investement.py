@@ -22,7 +22,8 @@ async def _():
     await micropip.install("plotly")
     import polars as pl
     import plotly.graph_objects as go
-    return go, pl
+    import altair as alt
+    return alt, pl
 
 
 @app.cell
@@ -227,64 +228,72 @@ def _(stock_investment_monthly):
 @app.cell
 def _(alternatives, pl, time_slider, wrapper_stock_investment_monthly):
     df_alternatives = []
-    for i, alt in enumerate(alternatives):
-        df = wrapper_stock_investment_monthly(alt, time_slider)
+    for i, alternative in enumerate(alternatives):
+        df = wrapper_stock_investment_monthly(alternative, time_slider)
         df = df.with_columns(pl.lit(f"Alternative {i + 1}").alias("scenario"))
         df_alternatives.append(df)
     return (df_alternatives,)
 
 
 @app.cell
-def _(COLORS, df_alternatives, go):
+def _(COLORS, alt, df_alternatives):
     def plot():
-        fig_alternatives = go.Figure()
+            # Combine all dataframes
+            combined_df = []
+            for i, df in enumerate(df_alternatives):
+                pdf = df.to_pandas()
+                pdf['Alternative'] = f"Alt {i + 1}"
+                # CHANGED: Removed color_index column - no longer needed
+                combined_df.append(pdf)
 
-        for i, df in enumerate(df_alternatives):
-            scenario_name = f"Alt {i + 1}"
-            color = COLORS[i % len(COLORS)]
+            import pandas as pd
+            full_df = pd.concat(combined_df, ignore_index=True)
 
-            fig_alternatives.add_trace(
-                go.Scatter(
-                    x=df["month"],
-                    y=df["balance"],
-                    name=f"{scenario_name} - Balance",
-                    mode="lines",
-                    line=dict(color=color),
-                )
-            )
-            fig_alternatives.add_trace(
-                go.Scatter(
-                    x=df["month"],
-                    y=df["returns_cum"],
-                    name=f"{scenario_name} - Returns",
-                    mode="lines",
-                    line=dict(dash="dash", color=color),
-                )
-            )
-            fig_alternatives.add_trace(
-                go.Scatter(
-                    x=df["month"],
-                    y=df["contributions_cum"],
-                    name=f"{scenario_name} - Contributions",
-                    mode="lines",
-                    line=dict(dash="dot", color=color),
-                )
+            # CHANGED: Removed color_scale creation - define colors inline instead
+
+            # Balance line
+            balance = alt.Chart(full_df).mark_line().encode(
+                x=alt.X('month:Q', title='Month'),
+                y=alt.Y('balance:Q', title='Amount'),
+                # CHANGED: Use Alternative directly with range parameter for colors
+                color=alt.Color('Alternative:N', 
+                               scale=alt.Scale(range=COLORS[:len(df_alternatives)]),
+                               legend=alt.Legend(title='Scenario')),
+                tooltip=['Alternative:N', 'month:Q', 'balance:Q']
+                # CHANGED: Removed detail parameter - not needed when color distinguishes lines
             )
 
-        fig_alternatives.update_layout(
-            title="Portfolio Projections - All Alternatives",
-            xaxis_title="Month",
-            yaxis_title="Amount",
-        )
-        return fig_alternatives
+            # Returns line (dashed)
+            returns = alt.Chart(full_df).mark_line(strokeDash=[5, 5]).encode(
+                x='month:Q',
+                y='returns_cum:Q',
+                # CHANGED: Same color encoding pattern
+                color=alt.Color('Alternative:N', 
+                               scale=alt.Scale(range=COLORS[:len(df_alternatives)]),
+                               legend=None),  # Hide legend for this layer
+                tooltip=['Alternative:N', 'month:Q', 'returns_cum:Q']
+            )
+
+            # Contributions line (dotted)
+            contributions = alt.Chart(full_df).mark_line(strokeDash=[2, 2]).encode(
+                x='month:Q',
+                y='contributions_cum:Q',
+                # CHANGED: Same color encoding pattern
+                color=alt.Color('Alternative:N', 
+                               scale=alt.Scale(range=COLORS[:len(df_alternatives)]),
+                               legend=None),  # Hide legend for this layer
+                tooltip=['Alternative:N', 'month:Q', 'contributions_cum:Q']
+            )
+
+            # Combine all charts
+            chart = (balance + returns + contributions).properties(
+                title='Portfolio Projections - All Alternatives',
+                width=600,
+                height=400
+            ).interactive()
+
+            return chart
     return (plot,)
-
-
-@app.cell
-def _(mo, plot):
-    figure = plot()
-    mo.ui.plotly(figure)
-    return
 
 
 @app.cell(column=1)
@@ -340,17 +349,6 @@ def _(create_scenario_sliders, get_scenarios, mo):
 
 
 @app.cell
-def _(add_button, alternatives, mo, remove_button, render_scenario_sliders):
-    mo.vstack(
-        [
-            *[render_scenario_sliders(alt, i) for i, alt in enumerate(alternatives)],
-            mo.hstack([add_button, remove_button]),
-        ]
-    )
-    return
-
-
-@app.cell
 def _(FULL_WIDTH, SHOW_VALUE, mo):
     time_slider = mo.ui.slider(
         start=1,
@@ -363,6 +361,24 @@ def _(FULL_WIDTH, SHOW_VALUE, mo):
     )
     time_slider
     return (time_slider,)
+
+
+@app.cell
+def _(plot):
+    figure = plot()
+    figure
+    return
+
+
+@app.cell
+def _(add_button, alternatives, mo, remove_button, render_scenario_sliders):
+    mo.vstack(
+        [
+            *[render_scenario_sliders(alternative, i) for i, alternative in enumerate(alternatives)],
+            mo.hstack([add_button, remove_button]),
+        ]
+    )
+    return
 
 
 if __name__ == "__main__":
