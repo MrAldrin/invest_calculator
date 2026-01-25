@@ -19,18 +19,17 @@ def _(mo):
 
 
 @app.cell
-def _(FULL_WIDTH, SHOW_VALUE, mo):
-    time_slider = mo.ui.slider(
-        start=1,
-        stop=25,
-        value=20,
-        debounce=True,
-        show_value=SHOW_VALUE,
-        full_width=FULL_WIDTH,
-        label="Projection horizon (years)",
-    )
+def _(mo):
+    mo.md(r"""
+    # Stock investment calculator
+    """)
+    return
+
+
+@app.cell
+def _(time_slider):
     time_slider
-    return (time_slider,)
+    return
 
 
 @app.cell
@@ -41,39 +40,8 @@ def _(df_alternatives, plot):
 
 
 @app.cell
-def _(
-    add_button,
-    alternatives,
-    get_visible_count,
-    mo,
-    remove_button,
-    render_scenario_sliders,
-):
-    left_buttons = []
-    right_buttons = []
-
-    if get_visible_count() < 5:  # CHANGED: Add button goes on the left
-        left_buttons.append(add_button)
-    if get_visible_count() > 1:  # CHANGED: Remove button goes on the right
-        right_buttons.append(remove_button)
-
-    mo.vstack(
-        [
-            *[
-                render_scenario_sliders(alternative, i)
-                for i, alternative in enumerate(alternatives)
-            ],
-            # CHANGED: Create hstack with left and right groups, justified between
-            mo.hstack(
-                [
-                    mo.hstack(left_buttons) if left_buttons else mo.Html(""),
-                    mo.hstack(right_buttons, justify="end")
-                    if right_buttons
-                    else mo.Html(""),
-                ]
-            ),
-        ]
-    )
+def _(ui_sliders_alternatives):
+    ui_sliders_alternatives
     return
 
 
@@ -144,6 +112,64 @@ def _(alternatives, pl, time_slider, wrapper_stock_investment_monthly):
     return (df_alternatives,)
 
 
+@app.cell
+def _(mo):
+    mo.md(r"""
+    # Sliders
+    """)
+    return
+
+
+@app.cell
+def _(FULL_WIDTH, SHOW_VALUE, mo):
+    time_slider = mo.ui.slider(
+        start=1,
+        stop=30,
+        value=20,
+        debounce=True,
+        show_value=SHOW_VALUE,
+        full_width=FULL_WIDTH,
+        label="Projection horizon (years)",
+    )
+    return (time_slider,)
+
+
+@app.cell
+def _(
+    add_button,
+    alternatives,
+    get_visible_count,
+    mo,
+    remove_button,
+    render_scenario_sliders,
+):
+    left_buttons = []
+    right_buttons = []
+
+    if get_visible_count() < 5:
+        left_buttons.append(add_button)
+    if get_visible_count() > 1:
+        right_buttons.append(remove_button)
+
+    ui_sliders_alternatives = mo.vstack(
+        [
+            *[
+                render_scenario_sliders(alternative, i)
+                for i, alternative in enumerate(alternatives)
+            ],
+            mo.hstack(
+                [
+                    mo.hstack(left_buttons) if left_buttons else mo.Html(""),
+                    mo.hstack(right_buttons, justify="end")
+                    if right_buttons
+                    else mo.Html(""),
+                ]
+            ),
+        ]
+    )
+    return (ui_sliders_alternatives,)
+
+
 @app.cell(column=2)
 def _(mo):
     mo.md(r"""
@@ -211,27 +237,57 @@ def _(COLORS, mo):
 
 
 @app.cell
-def _(mo, set_scenarios):
+def _():
+    import numpy as np
+    import math
+
+
+    def creator_step_range(min_val=1000, max_val=1e6):
+        # zero is always included
+        a = 1.5
+        b = 3
+
+        values = [0]
+
+        if min_val > 0:
+            magnitude = 10 ** (math.floor(math.log10(min_val)) - 1)
+        else:
+            magnitude = 1
+
+        while magnitude <= max_val:
+            # fine steps
+            values.extend(np.arange(a * magnitude, b * magnitude, magnitude / 10))
+
+            # coarser steps
+            values.extend(np.arange(b * magnitude, a * magnitude * 10, magnitude / 2))
+
+            magnitude *= 10
+
+        # filter + clean
+        values = np.array(values)
+        values = values[(values == 0) | ((values >= min_val) & (values <= max_val))]
+        return np.unique(values).tolist()
+    return (creator_step_range,)
+
+
+@app.cell
+def _(creator_step_range, mo, set_scenarios):
     def create_scenario_sliders(values, color_index):
         _show_value = True
         _full_width = True
         slider_dict = mo.ui.dictionary(
             {
                 "initial_stock_investment": mo.ui.slider(
-                    start=0,
-                    stop=2_000_000,
+                    steps=creator_step_range(min_val=1e4, max_val=1e7),
                     value=values["initial_stock_investment"],
-                    step=50_000,
                     debounce=True,
                     show_value=_show_value,
                     full_width=_full_width,
                     label=f"Initial stock investment",
                 ),
                 "monthly_stock_investment": mo.ui.slider(
-                    start=0,
-                    stop=50_000,
+                    steps=creator_step_range(min_val=1e2, max_val=1e6),
                     value=values["monthly_stock_investment"],
-                    step=1_000,
                     debounce=True,
                     show_value=_show_value,
                     full_width=_full_width,
