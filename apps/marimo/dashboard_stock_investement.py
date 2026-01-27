@@ -64,7 +64,7 @@ def _(mo):
                 "annual_inflation": 2.0,
             }
         ]
-        * 5
+        * 4
     )
     return get_scenarios, set_scenarios
 
@@ -403,6 +403,18 @@ def _(COLORS, alt, pl):
 
 
 @app.cell(column=3)
+def _(mo):
+    nav_menu = mo.nav_menu(
+        {
+            "/overview": "Overview",
+            "/sales": f"{mo.icon('lucide:shopping-cart')} Sales",
+            "/products": f"{mo.icon('lucide:package')} Products",
+        }
+    )
+    return
+
+
+@app.cell(column=4)
 def _(mo):
     mo.md(r"""
     # Functions that i have/had in src/utils.py
